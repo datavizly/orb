@@ -5,7 +5,8 @@
 
 'use strict';
 
-var react = typeof window === 'undefined' ? require('react') : window.React;
+var react = require('react');
+var ReactDOM = require('react-dom');
 var utils = require('../orb.utils');
 var axe = require('../orb.axe');
 var uiheaders = require('../orb.ui.header');
@@ -14,6 +15,7 @@ var reactUtils = require('./orb.react.utils');
 
 var extraCol = 0;
 var comps = module.exports;
+var React = react;
 
 /** @jsx React.DOM */
 
@@ -28,7 +30,7 @@ module.exports.PivotTable = react.createClass({
     id: pivotId++,
     pgrid: null,
     pgridwidget: null,
-    getInitialState: function() {
+    getInitialState: function () {
         comps.DragManager.init(this);
 
         themeChangeCallbacks[this.id] = [];
@@ -38,54 +40,54 @@ module.exports.PivotTable = react.createClass({
         this.pgrid = this.pgridwidget.pgrid;
         return {};
     },
-    sort: function(axetype, field) {
+    sort: function (axetype, field) {
         this.pgridwidget.sort(axetype, field);
         this.setProps({});
     },
-    moveButton: function(button, newAxeType, position) {
+    moveButton: function (button, newAxeType, position) {
         if (this.pgridwidget.moveField(button.props.field.name, button.props.axetype, newAxeType, position)) {
             this.setProps({});
         }
     },
-    toggleFieldExpansion: function(axetype, field, newState) {
+    toggleFieldExpansion: function (axetype, field, newState) {
         if (this.pgridwidget.toggleFieldExpansion(axetype, field, newState)) {
             this.setProps({});
         }
     },
-    toggleSubtotals: function(axetype) {
+    toggleSubtotals: function (axetype) {
         if (this.pgridwidget.toggleSubtotals(axetype)) {
             this.setProps({});
         }
     },
-    toggleGrandtotal: function(axetype) {
+    toggleGrandtotal: function (axetype) {
         if (this.pgridwidget.toggleGrandtotal(axetype)) {
             this.setProps({});
         }
     },
-    expandRow: function(cell) {
+    expandRow: function (cell) {
         cell.expand();
         this.setProps({});
     },
-    collapseRow: function(cell) {
+    collapseRow: function (cell) {
         cell.subtotalHeader.collapse();
         this.setProps({});
     },
-    applyFilter: function(fieldname, operator, term, staticValue, excludeStatic) {
+    applyFilter: function (fieldname, operator, term, staticValue, excludeStatic) {
         this.pgridwidget.applyFilter(fieldname, operator, term, staticValue, excludeStatic);
         this.setProps({});
     },
-    registerThemeChanged: function(compCallback) {
+    registerThemeChanged: function (compCallback) {
         if (compCallback) {
             themeChangeCallbacks[this.id].push(compCallback);
         }
     },
-    unregisterThemeChanged: function(compCallback) {
+    unregisterThemeChanged: function (compCallback) {
         var i;
         if (compCallback && (i = themeChangeCallbacks[this.id].indexOf(compCallback)) >= 0) {
             themeChangeCallbacks[this.id].splice(i, 1);
         }
     },
-    changeTheme: function(newTheme) {
+    changeTheme: function (newTheme) {
         if (this.pgridwidget.pgrid.config.setTheme(newTheme)) {
             // notify self/sub-components of the theme change
             for (var i = 0; i < themeChangeCallbacks[this.id].length; i++) {
@@ -93,22 +95,22 @@ module.exports.PivotTable = react.createClass({
             }
         }
     },
-    updateClasses: function() {
-        var thisnode = this.getDOMNode();
+    updateClasses: function () {
+        var thisnode = ReactDOM.findDOMNode(this);
         var classes = this.pgridwidget.pgrid.config.theme.getPivotClasses();
         thisnode.className = classes.container;
         thisnode.children[1].className = classes.table;
     },
-    componentDidUpdate: function() {
+    componentDidUpdate: function () {
         this.synchronizeCompsWidths();
     },
-    componentDidMount: function() {
-        var dataCellsContainerNode = this.refs.dataCellsContainer.getDOMNode();
-        var dataCellsTableNode = this.refs.dataCellsTable.getDOMNode();
-        var colHeadersContainerNode = this.refs.colHeadersContainer.getDOMNode();
-        var rowHeadersContainerNode = this.refs.rowHeadersContainer.getDOMNode();
+    componentDidMount: function () {
+        var dataCellsContainerNode = ReactDOM.findDOMNode(this.refs.dataCellsContainer);
+        var dataCellsTableNode = ReactDOM.findDOMNode(this.refs.dataCellsTable);
+        var colHeadersContainerNode = ReactDOM.findDOMNode(this.refs.colHeadersContainer);
+        var rowHeadersContainerNode = ReactDOM.findDOMNode(this.refs.rowHeadersContainer);
 
-        this.refs.horizontalScrollBar.setScrollClient(dataCellsContainerNode, function(scrollPercent) {
+        this.refs.horizontalScrollBar.setScrollClient(dataCellsContainerNode, function (scrollPercent) {
             var scrollAmount = Math.ceil(
                 scrollPercent * (
                     reactUtils.getSize(dataCellsTableNode).width -
@@ -119,7 +121,7 @@ module.exports.PivotTable = react.createClass({
             dataCellsContainerNode.scrollLeft = scrollAmount;
         });
 
-        this.refs.verticalScrollBar.setScrollClient(dataCellsContainerNode, function(scrollPercent) {
+        this.refs.verticalScrollBar.setScrollClient(dataCellsContainerNode, function (scrollPercent) {
             var scrollAmount = Math.ceil(
                 scrollPercent * (
                     reactUtils.getSize(dataCellsTableNode).height -
@@ -132,16 +134,16 @@ module.exports.PivotTable = react.createClass({
 
         this.synchronizeCompsWidths();
     },
-    onWheel: function(e) {
+    onWheel: function (e) {
         var elem;
         var scrollbar;
         var amount;
 
-        if (e.currentTarget == (elem = this.refs.colHeadersContainer.getDOMNode())) {
+        if (e.currentTarget == (elem = ReactDOM.findDOMNode(this.refs.colHeadersContainer))) {
             scrollbar = this.refs.horizontalScrollBar;
             amount = e.deltaX || e.deltaY;
-        } else if ((e.currentTarget == (elem = this.refs.rowHeadersContainer.getDOMNode())) ||
-            (e.currentTarget == (elem = this.refs.dataCellsContainer.getDOMNode()))) {
+        } else if ((e.currentTarget == (elem = ReactDOM.findDOMNode(this.refs.rowHeadersContainer))) ||
+            (e.currentTarget == (elem = ReactDOM.findDOMNode(this.refs.dataCellsContainer)))) {
             scrollbar = this.refs.verticalScrollBar;
             amount = e.deltaY;
         }
@@ -151,21 +153,21 @@ module.exports.PivotTable = react.createClass({
             e.preventDefault();
         }
     },
-    synchronizeCompsWidths: function() {
+    synchronizeCompsWidths: function () {
         var self = this;
 
-        var pivotWrapperTable = self.refs.pivotWrapperTable.getDOMNode();
+        var pivotWrapperTable = ReactDOM.findDOMNode(self.refs.pivotWrapperTable);
 
-        var nodes = (function() {
+        var nodes = (function () {
             var nds = {};
             ['pivotContainer', 'dataCellsContainer', 'dataCellsTable', 'upperbuttonsRow', 'columnbuttonsRow',
                 /*'colHeadersTable',*/
                 'colHeadersContainer', /*'rowHeadersTable',*/ 'rowHeadersContainer', 'rowButtonsContainer',
                 'toolbar', 'horizontalScrollBar', 'verticalScrollBar'
-            ].forEach(function(refname) {
+            ].forEach(function (refname) {
                 if (self.refs[refname]) {
                     nds[refname] = {
-                        node: self.refs[refname].getDOMNode()
+                        node: ReactDOM.findDOMNode(self.refs[refname])
                     };
                     nds[refname].size = reactUtils.getSize(nds[refname].node);
                 }
@@ -261,16 +263,16 @@ module.exports.PivotTable = react.createClass({
                 nodes.verticalScrollBar.size.width,
                 Math.max(
                     nodes.pivotContainer.size.width - (
-                        rowHeadersTableWidth +
-                        dataCellsContainerWidth +
-                        nodes.verticalScrollBar.size.width),
+                    rowHeadersTableWidth +
+                    dataCellsContainerWidth +
+                    nodes.verticalScrollBar.size.width),
                     0)
             ]);
 
         this.refs.horizontalScrollBar.refresh();
         this.refs.verticalScrollBar.refresh();
     },
-    render: function() {
+    render: function () {
 
         var self = this;
 
@@ -505,7 +507,7 @@ function getAllColumnsWidth(tblObject) {
 
         // set widthArray to the tblObject
         tblObject.size.width = 0;
-        tblObject.widthArray = widthArray.map(function(item, index) {
+        tblObject.widthArray = widthArray.map(function (item, index) {
             tblObject.size.width += item.width;
             return item.width;
         });
@@ -598,17 +600,17 @@ function setTableWidths(tblObject, newWidthArray) {
 }
 
 function clearTableWidths(tbl) {
-        if (tbl) {
-            for (var rowIndex = 0; rowIndex < tbl.rows.length; rowIndex++) {
-                var row = tbl.rows[rowIndex];
-                for (var cellIndex = 0; cellIndex < row.cells.length; cellIndex++) {
-                    row.cells[cellIndex].children[0].style.width = '';
-                }
+    if (tbl) {
+        for (var rowIndex = 0; rowIndex < tbl.rows.length; rowIndex++) {
+            var row = tbl.rows[rowIndex];
+            for (var cellIndex = 0; cellIndex < row.cells.length; cellIndex++) {
+                row.cells[cellIndex].children[0].style.width = '';
             }
-            tbl.style.width = '';
         }
+        tbl.style.width = '';
     }
-    /** @jsx React.DOM */
+}
+/** @jsx React.DOM */
 
 /* global module, require, React */
 
@@ -616,7 +618,7 @@ function clearTableWidths(tbl) {
 
 
 module.exports.PivotRow = react.createClass({
-    render: function() {
+    render: function () {
         var self = this;
         var PivotCell = comps.PivotCell;
 
@@ -630,7 +632,7 @@ module.exports.PivotRow = react.createClass({
 
         var istopmost = false;
 
-        cells = this.props.row.map(function(cell, index) {
+        cells = this.props.row.map(function (cell, index) {
 
             var isleftmost = false;
 
@@ -689,14 +691,14 @@ var _paddingLeft = null;
 var _borderLeft = null;
 
 module.exports.PivotCell = react.createClass({
-    expand: function() {
+    expand: function () {
         this.props.pivotTableComp.expandRow(this.props.cell);
     },
-    collapse: function() {
+    collapse: function () {
         this.props.pivotTableComp.collapseRow(this.props.cell);
     },
-    updateCellInfos: function() {
-        var node = this.getDOMNode();
+    updateCellInfos: function () {
+        var node = ReactDOM.findDOMNode(this);
         var cell = this.props.cell;
         node.__orb = node.__orb || {};
 
@@ -705,7 +707,7 @@ module.exports.PivotCell = react.createClass({
             node.__orb._visible = false;
 
         } else {
-            var cellContentNode = this.refs.cellContent.getDOMNode();
+            var cellContentNode = ReactDOM.findDOMNode(this.refs.cellContent);
 
             var text = node.textContent;
             var propList = [];
@@ -744,20 +746,20 @@ module.exports.PivotCell = react.createClass({
             node.__orb._borderRightWidth = 0;
         }
     },
-    componentDidMount: function() {
+    componentDidMount: function () {
         this.updateCellInfos();
     },
-    componentDidUpdate: function() {
+    componentDidUpdate: function () {
         this.updateCellInfos();
     },
-    shouldComponentUpdate: function(nextProps, nextState) {
+    shouldComponentUpdate: function (nextProps, nextState) {
         if (nextProps.cell && nextProps.cell == this.props.cell && !this._latestVisibleState && !nextProps.cell.visible()) {
             return false;
         }
         return true;
     },
     _latestVisibleState: false,
-    render: function() {
+    render: function () {
         var self = this;
         var cell = this.props.cell;
         var divcontent = [];
@@ -803,7 +805,7 @@ module.exports.PivotCell = react.createClass({
                 break;
             case 'cell-template-datavalue':
                 value = (cell.datafield && cell.datafield.formatFunc) ? cell.datafield.formatFunc()(cell.value) : cell.value;
-                cellClick = function() {
+                cellClick = function () {
                     self.props.pivotTableComp.pgridwidget.drilldown(cell, self.props.pivotTableComp.id);
                 };
                 break;
@@ -847,42 +849,42 @@ module.exports.PivotCell = react.createClass({
 });
 
 function getClassname(compProps) {
-        var cell = compProps.cell;
-        var classname = cell.cssclass;
-        var isEmpty = cell.template === 'cell-template-empty';
+    var cell = compProps.cell;
+    var classname = cell.cssclass;
+    var isEmpty = cell.template === 'cell-template-empty';
 
-        if (!cell.visible()) {
-            classname += ' cell-hidden';
-        }
-
-        if (cell.type === uiheaders.HeaderType.SUB_TOTAL && cell.expanded) {
-            classname += ' header-st-exp';
-        }
-
-        if (cell.type === uiheaders.HeaderType.GRAND_TOTAL) {
-            if (cell.dim.depth === 1) {
-                classname += ' header-nofields';
-            } else if (cell.dim.depth > 2) {
-                classname += ' header-gt-exp';
-            }
-        }
-
-        if (compProps.leftmost) {
-            classname += ' ' + (cell.template === 'cell-template-datavalue' ? 'cell' : 'header') + '-leftmost';
-        }
-
-        if (compProps.topmost) {
-            classname += ' cell-topmost';
-        }
-
-        return classname;
+    if (!cell.visible()) {
+        classname += ' cell-hidden';
     }
-    /* global module, require, react, reactUtils */
-    /*jshint eqnull: true*/
+
+    if (cell.type === uiheaders.HeaderType.SUB_TOTAL && cell.expanded) {
+        classname += ' header-st-exp';
+    }
+
+    if (cell.type === uiheaders.HeaderType.GRAND_TOTAL) {
+        if (cell.dim.depth === 1) {
+            classname += ' header-nofields';
+        } else if (cell.dim.depth > 2) {
+            classname += ' header-gt-exp';
+        }
+    }
+
+    if (compProps.leftmost) {
+        classname += ' ' + (cell.template === 'cell-template-datavalue' ? 'cell' : 'header') + '-leftmost';
+    }
+
+    if (compProps.topmost) {
+        classname += ' cell-topmost';
+    }
+
+    return classname;
+}
+/* global module, require, react, reactUtils */
+/*jshint eqnull: true*/
 
 'use strict';
 
-var dragManager = module.exports.DragManager = (function() {
+var dragManager = module.exports.DragManager = (function () {
 
     var _pivotComp = null;
 
@@ -896,14 +898,14 @@ var dragManager = module.exports.DragManager = (function() {
 
     function doElementsOverlap(elem1Rect, elem2Rect) {
         return !(elem1Rect.right < elem2Rect.left ||
-            elem1Rect.left > elem2Rect.right ||
-            elem1Rect.bottom < elem2Rect.top ||
-            elem1Rect.top > elem2Rect.bottom);
+        elem1Rect.left > elem2Rect.right ||
+        elem1Rect.bottom < elem2Rect.top ||
+        elem1Rect.top > elem2Rect.bottom);
     }
 
     function setCurrDropTarget(dropTarget, callback) {
         if (_currDropTarget) {
-            signalDragEnd(_currDropTarget, function() {
+            signalDragEnd(_currDropTarget, function () {
                 _currDropTarget = dropTarget;
                 signalDragOver(dropTarget, callback);
             });
@@ -915,7 +917,7 @@ var dragManager = module.exports.DragManager = (function() {
 
     function setCurrDropIndicator(dropIndicator) {
         if (_currDropIndicator) {
-            signalDragEnd(_currDropIndicator, function() {
+            signalDragEnd(_currDropIndicator, function () {
                 _currDropIndicator = dropIndicator;
                 signalDragOver(dropIndicator);
             });
@@ -942,7 +944,7 @@ var dragManager = module.exports.DragManager = (function() {
     }
 
     function getDropTarget() {
-        return reactUtils.forEach(_dropTargets, function(target) {
+        return reactUtils.forEach(_dropTargets, function (target) {
             if (target.component.state.isover) {
                 return target;
             }
@@ -950,7 +952,7 @@ var dragManager = module.exports.DragManager = (function() {
     }
 
     function getDropIndicator() {
-        return reactUtils.forEach(_dropIndicators, function(indicator) {
+        return reactUtils.forEach(_dropIndicators, function (indicator) {
             if (indicator.component.state.isover) {
                 return indicator;
             }
@@ -960,11 +962,11 @@ var dragManager = module.exports.DragManager = (function() {
     var _initialized = false;
 
     return {
-        init: function(pivotComp) {
+        init: function (pivotComp) {
             _initialized = true;
             _pivotComp = pivotComp;
         },
-        setDragElement: function(elem) {
+        setDragElement: function (elem) {
 
             var prevDragElement = _currDragElement;
             _currDragElement = elem;
@@ -981,11 +983,11 @@ var dragManager = module.exports.DragManager = (function() {
                     setCurrDropIndicator(null);
 
                 } else {
-                    _dragNode = _currDragElement.getDOMNode();
+                    _dragNode = ReactDOM.findDOMNode(_currDragElement);
                 }
             }
         },
-        registerTarget: function(target, axetype, dragOverHandler, dargEndHandler) {
+        registerTarget: function (target, axetype, dragOverHandler, dargEndHandler) {
             _dropTargets.push({
                 component: target,
                 axetype: axetype,
@@ -993,7 +995,7 @@ var dragManager = module.exports.DragManager = (function() {
                 onDragEnd: dargEndHandler
             });
         },
-        unregisterTarget: function(target) {
+        unregisterTarget: function (target) {
             var tindex;
             for (var i = 0; i < _dropTargets.length; i++) {
                 if (_dropTargets[i].component == target) {
@@ -1005,7 +1007,7 @@ var dragManager = module.exports.DragManager = (function() {
                 _dropTargets.splice(tindex, 1);
             }
         },
-        registerIndicator: function(indicator, axetype, position, dragOverHandler, dargEndHandler) {
+        registerIndicator: function (indicator, axetype, position, dragOverHandler, dargEndHandler) {
             _dropIndicators.push({
                 component: indicator,
                 axetype: axetype,
@@ -1014,7 +1016,7 @@ var dragManager = module.exports.DragManager = (function() {
                 onDragEnd: dargEndHandler
             });
         },
-        unregisterIndicator: function(indicator) {
+        unregisterIndicator: function (indicator) {
             var iindex;
             for (var i = 0; i < _dropIndicators.length; i++) {
                 if (_dropIndicators[i].component == indicator) {
@@ -1026,14 +1028,14 @@ var dragManager = module.exports.DragManager = (function() {
                 _dropIndicators.splice(iindex, 1);
             }
         },
-        elementMoved: function() {
+        elementMoved: function () {
             if (_currDragElement != null) {
                 var dragNodeRect = _dragNode.getBoundingClientRect();
                 var foundTarget;
 
-                reactUtils.forEach(_dropTargets, function(target) {
+                reactUtils.forEach(_dropTargets, function (target) {
                     if (!foundTarget) {
-                        var tnodeRect = target.component.getDOMNode().getBoundingClientRect();
+                        var tnodeRect = ReactDOM.findDOMNode(target.component).getBoundingClientRect();
                         var isOverlap = doElementsOverlap(dragNodeRect, tnodeRect);
                         if (isOverlap) {
                             foundTarget = target;
@@ -1043,17 +1045,17 @@ var dragManager = module.exports.DragManager = (function() {
                 }, true);
 
                 if (foundTarget) {
-                    setCurrDropTarget(foundTarget, function() {
+                    setCurrDropTarget(foundTarget, function () {
                         var foundIndicator = null;
 
-                        reactUtils.forEach(_dropIndicators, function(indicator, index) {
+                        reactUtils.forEach(_dropIndicators, function (indicator, index) {
                             if (!foundIndicator) {
                                 var elementOwnIndicator = indicator.component.props.axetype === _currDragElement.props.axetype &&
                                     indicator.component.props.position === _currDragElement.props.position;
 
                                 var targetIndicator = indicator.component.props.axetype === foundTarget.component.props.axetype;
                                 if (targetIndicator && !elementOwnIndicator) {
-                                    var tnodeRect = indicator.component.getDOMNode().getBoundingClientRect();
+                                    var tnodeRect = ReactDOM.findDOMNode(indicator.component).getBoundingClientRect();
                                     var isOverlap = doElementsOverlap(dragNodeRect, tnodeRect);
                                     if (isOverlap) {
                                         foundIndicator = indicator;
@@ -1064,7 +1066,7 @@ var dragManager = module.exports.DragManager = (function() {
                         });
 
                         if (!foundIndicator) {
-                            var axeIndicators = _dropIndicators.filter(function(indicator) {
+                            var axeIndicators = _dropIndicators.filter(function (indicator) {
                                 return indicator.component.props.axetype === foundTarget.component.props.axetype;
                             });
                             if (axeIndicators.length > 0) {
@@ -1088,16 +1090,16 @@ var dragManager = module.exports.DragManager = (function() {
 
 module.exports.DropIndicator = react.createClass({
     displayName: 'DropIndicator',
-    getInitialState: function() {
+    getInitialState: function () {
         dragManager.registerIndicator(this, this.props.axetype, this.props.position, this.onDragOver, this.onDragEnd);
         return {
             isover: false
         };
     },
-    componentWillUnmount: function() {
+    componentWillUnmount: function () {
         dragManager.unregisterIndicator(this);
     },
-    onDragOver: function(callback) {
+    onDragOver: function (callback) {
         if (this.isMounted()) {
             this.setState({
                 isover: true
@@ -1106,7 +1108,7 @@ module.exports.DropIndicator = react.createClass({
             callback();
         }
     },
-    onDragEnd: function(callback) {
+    onDragEnd: function (callback) {
         if (this.isMounted()) {
             this.setState({
                 isover: false
@@ -1115,7 +1117,7 @@ module.exports.DropIndicator = react.createClass({
             callback();
         }
     },
-    render: function() {
+    render: function () {
         var classname = 'drp-indic';
 
         if (this.props.isFirst) {
@@ -1147,19 +1149,19 @@ module.exports.DropIndicator = react.createClass({
 var dtid = 0;
 
 module.exports.DropTarget = react.createClass({
-    getInitialState: function() {
+    getInitialState: function () {
         this.dtid = ++dtid;
         return {
             isover: false
         };
     },
-    componentDidMount: function() {
+    componentDidMount: function () {
         dragManager.registerTarget(this, this.props.axetype, this.onDragOver, this.onDragEnd);
     },
-    componentWillUnmount: function() {
+    componentWillUnmount: function () {
         dragManager.unregisterTarget(this);
     },
-    onDragOver: function(callback) {
+    onDragOver: function (callback) {
         if (this.isMounted()) {
             this.setState({
                 isover: true
@@ -1168,7 +1170,7 @@ module.exports.DropTarget = react.createClass({
             callback();
         }
     },
-    onDragEnd: function(callback) {
+    onDragEnd: function (callback) {
         if (this.isMounted()) {
             this.setState({
                 isover: false
@@ -1177,11 +1179,11 @@ module.exports.DropTarget = react.createClass({
             callback();
         }
     },
-    render: function() {
+    render: function () {
         var self = this;
         var DropIndicator = module.exports.DropIndicator;
 
-        var buttons = this.props.buttons.map(function(button, index) {
+        var buttons = this.props.buttons.map(function (button, index) {
             if (index < self.props.buttons.length - 1) {
                 return [
                     React.createElement("td", null, React.createElement(DropIndicator, {
@@ -1239,7 +1241,7 @@ var pbid = 0;
 
 module.exports.PivotButton = react.createClass({
     displayName: 'PivotButton',
-    getInitialState: function() {
+    getInitialState: function () {
         this.pbid = ++pbid;
 
         // initial state, all zero.
@@ -1256,7 +1258,7 @@ module.exports.PivotButton = react.createClass({
             dragging: false
         };
     },
-    onFilterMouseDown: function(e) {
+    onFilterMouseDown: function (e) {
         // left mouse button only
         if (e.button !== 0) return;
 
@@ -1281,7 +1283,7 @@ module.exports.PivotButton = react.createClass({
         e.stopPropagation();
         e.preventDefault();
     },
-    componentDidUpdate: function() {
+    componentDidUpdate: function () {
         if (this.props.pivotTableComp.pgrid.config.canMoveFields) {
             if (!this.state.mousedown) {
                 // mouse not down, don't care about mouse up/move events.
@@ -1294,14 +1296,14 @@ module.exports.PivotButton = react.createClass({
             }
         }
     },
-    componentDidMount: function() {
+    componentDidMount: function () {
         this.props.pivotTableComp.registerThemeChanged(this.updateClasses);
     },
-    componentWillUnmount: function() {
+    componentWillUnmount: function () {
         this.props.pivotTableComp.unregisterThemeChanged(this.updateClasses);
         document.removeEventListener('mousemove', this.onMouseMove);
     },
-    onMouseDown: function(e) {
+    onMouseDown: function (e) {
         // drag/sort with left mouse button
         if (e.button !== 0) return;
 
@@ -1309,7 +1311,7 @@ module.exports.PivotButton = react.createClass({
             this.props.pivotTableComp.toggleFieldExpansion(this.props.axetype, this.props.field);
         } else {
 
-            var thispos = reactUtils.getOffset(this.getDOMNode());
+            var thispos = reactUtils.getOffset(ReactDOM.findDOMNode(this));
 
             // inform mousedown, save start pos
             this.setState({
@@ -1329,7 +1331,7 @@ module.exports.PivotButton = react.createClass({
         e.stopPropagation();
         e.preventDefault();
     },
-    onMouseUp: function(e) {
+    onMouseUp: function (e) {
 
         var isdragged = this.state.dragging;
 
@@ -1348,13 +1350,13 @@ module.exports.PivotButton = react.createClass({
             this.props.pivotTableComp.sort(this.props.axetype, this.props.field);
         }
     },
-    onMouseMove: function(e) {
+    onMouseMove: function (e) {
         // if the mouse is not down while moving, return (no drag)
         if (!this.props.pivotTableComp.pgrid.config.canMoveFields || !this.state.mousedown) return;
 
         var size = null;
         if (!this.state.dragging) {
-            size = reactUtils.getSize(this.getDOMNode());
+            size = reactUtils.getSize(ReactDOM.findDOMNode(this));
         } else {
             size = this.state.size;
         }
@@ -1375,10 +1377,10 @@ module.exports.PivotButton = react.createClass({
         e.stopPropagation();
         e.preventDefault();
     },
-    updateClasses: function() {
-        this.getDOMNode().className = this.props.pivotTableComp.pgrid.config.theme.getButtonClasses().pivotButton;
+    updateClasses: function () {
+        ReactDOM.findDOMNode(this).className = this.props.pivotTableComp.pgrid.config.theme.getButtonClasses().pivotButton;
     },
-    render: function() {
+    render: function () {
         var self = this;
         var divstyle = {
             left: self.state.pos.x + 'px',
@@ -1442,7 +1444,7 @@ module.exports.PivotButton = react.createClass({
 'use strict';
 
 module.exports.PivotTableUpperButtons = react.createClass({
-    render: function() {
+    render: function () {
         var self = this;
         var PivotButton = comps.PivotButton;
         var DropTarget = comps.DropTarget;
@@ -1451,7 +1453,7 @@ module.exports.PivotTableUpperButtons = react.createClass({
 
         var fieldsDropTarget;
         if (config.canMoveFields) {
-            var fieldsButtons = config.availablefields().map(function(field, index) {
+            var fieldsButtons = config.availablefields().map(function (field, index) {
                 return React.createElement(PivotButton, {
                     key: field.name,
                     field: field,
@@ -1479,7 +1481,7 @@ module.exports.PivotTableUpperButtons = react.createClass({
             fieldsDropTarget = null;
         }
 
-        var dataButtons = config.dataFields.map(function(field, index) {
+        var dataButtons = config.dataFields.map(function (field, index) {
             return React.createElement(PivotButton, {
                 key: field.name,
                 field: field,
@@ -1522,14 +1524,14 @@ module.exports.PivotTableUpperButtons = react.createClass({
 'use strict';
 
 module.exports.PivotTableColumnButtons = react.createClass({
-    render: function() {
+    render: function () {
         var self = this;
         var PivotButton = comps.PivotButton;
         var DropTarget = comps.DropTarget;
 
         var config = this.props.pivotTableComp.pgridwidget.pgrid.config;
 
-        var columnButtons = config.columnFields.map(function(field, index) {
+        var columnButtons = config.columnFields.map(function (field, index) {
             return React.createElement(PivotButton, {
                 key: field.name,
                 field: field,
@@ -1552,14 +1554,14 @@ module.exports.PivotTableColumnButtons = react.createClass({
 'use strict';
 
 module.exports.PivotTableRowButtons = react.createClass({
-    render: function() {
+    render: function () {
         var self = this;
         var PivotButton = comps.PivotButton;
         var DropTarget = comps.DropTarget;
 
         var config = this.props.pivotTableComp.pgridwidget.pgrid.config;
 
-        var rowButtons = config.rowFields.map(function(field, index) {
+        var rowButtons = config.rowFields.map(function (field, index) {
             return React.createElement(PivotButton, {
                 key: field.name,
                 field: field,
@@ -1582,7 +1584,7 @@ module.exports.PivotTableRowButtons = react.createClass({
 'use strict';
 
 module.exports.PivotTableColumnHeaders = react.createClass({
-    render: function() {
+    render: function () {
         var self = this;
         var PivotRow = comps.PivotRow;
         var pgridwidget = this.props.pivotTableComp.pgridwidget;
@@ -1593,7 +1595,7 @@ module.exports.PivotTableColumnHeaders = react.createClass({
             topMostCells: {}
         };
 
-        var columnHeaders = pgridwidget.columns.headers.map(function(headerRow, index) {
+        var columnHeaders = pgridwidget.columns.headers.map(function (headerRow, index) {
             return React.createElement(PivotRow, {
                 key: index,
                 row: headerRow,
@@ -1626,8 +1628,8 @@ module.exports.PivotTableColumnHeaders = react.createClass({
 'use strict';
 
 module.exports.PivotTableRowHeaders = react.createClass({
-    setColGroup: function(widths) {
-        var node = this.getDOMNode();
+    setColGroup: function (widths) {
+        var node = ReactDOM.findDOMNode(this);
         var colGroupNode = this.refs.colgroup.getDOMNode();
         node.style.tableLayout = 'auto';
 
@@ -1639,7 +1641,7 @@ module.exports.PivotTableRowHeaders = react.createClass({
         }
         node.style.tableLayout = 'fixed';
     },
-    render: function() {
+    render: function () {
         var self = this;
         var PivotRow = comps.PivotRow;
         var pgridwidget = this.props.pivotTableComp.pgridwidget;
@@ -1650,7 +1652,7 @@ module.exports.PivotTableRowHeaders = react.createClass({
             topMostCells: {}
         };
 
-        var rowHeaders = pgridwidget.rows.headers.map(function(headerRow, index) {
+        var rowHeaders = pgridwidget.rows.headers.map(function (headerRow, index) {
             return React.createElement(PivotRow, {
                 key: index,
                 row: headerRow,
@@ -1685,7 +1687,7 @@ module.exports.PivotTableRowHeaders = react.createClass({
 'use strict';
 
 module.exports.PivotTableDataCells = react.createClass({
-    render: function() {
+    render: function () {
         var self = this;
         var PivotRow = comps.PivotRow;
 
@@ -1695,7 +1697,7 @@ module.exports.PivotTableDataCells = react.createClass({
             topMostCells: {}
         };
 
-        var dataCells = pgridwidget.dataRows.map(function(dataRow, index) {
+        var dataCells = pgridwidget.dataRows.map(function (dataRow, index) {
             return React.createElement(PivotRow, {
                 key: index,
                 row: dataRow,
@@ -1725,7 +1727,7 @@ module.exports.PivotTableDataCells = react.createClass({
 var scrollBarMixin = {
     scrollEvent: null,
     scrollClient: null,
-    getInitialState: function() {
+    getInitialState: function () {
         // initial state, all zero.
         return {
             size: 16,
@@ -1733,10 +1735,10 @@ var scrollBarMixin = {
             thumbOffset: 0
         };
     },
-    componentDidMount: function() {
+    componentDidMount: function () {
         this.scrollEvent = new ScrollEvent(this);
     },
-    componentDidUpdate: function() {
+    componentDidUpdate: function () {
         if (!this.state.mousedown) {
             // mouse not down, don't care about mouse up/move events.
             document.removeEventListener('mousemove', this.onMouseMove);
@@ -1747,15 +1749,15 @@ var scrollBarMixin = {
             document.addEventListener('mouseup', this.onMouseUp);
         }
     },
-    componentWillUnmount: function() {
+    componentWillUnmount: function () {
         document.removeEventListener('mousemove', this.onMouseMove);
         document.removeEventListener('mouseup', this.onMouseUp);
     },
-    onMouseDown: function(e) {
+    onMouseDown: function (e) {
         // drag with left mouse button
         if (e.button !== 0) return;
 
-        var thumbElem = this.refs.scrollThumb.getDOMNode();
+        var thumbElem = ReactDOM.findDOMNode(this.refs.scrollThumb);
         var thumbposInParent = reactUtils.getParentOffset(thumbElem);
 
         reactUtils.addClass(thumbElem, 'orb-scrollthumb-hover');
@@ -1771,10 +1773,10 @@ var scrollBarMixin = {
         e.stopPropagation();
         e.preventDefault();
     },
-    onMouseUp: function() {
+    onMouseUp: function () {
 
         if (this.state.mousedown) {
-            var thumbElem = this.refs.scrollThumb.getDOMNode();
+            var thumbElem = ReactDOM.findDOMNode(this.refs.scrollThumb);
             reactUtils.removeClass(thumbElem, 'orb-scrollthumb-hover');
         }
 
@@ -1782,7 +1784,7 @@ var scrollBarMixin = {
             mousedown: false
         });
     },
-    onMouseMove: function(e) {
+    onMouseMove: function (e) {
 
         // if the mouse is not down while moving, return (no drag)
         if (!this.state.mousedown) return;
@@ -1795,22 +1797,22 @@ var scrollBarMixin = {
 
         this.scroll(amount);
     },
-    getScrollSize: function() {
+    getScrollSize: function () {
         if (this.scrollClient != null) {
             return reactUtils.getSize(this.scrollClient)[this.sizeProp];
         } else {
-            return reactUtils.getSize(this.getDOMNode())[this.sizeProp];
+            return reactUtils.getSize(ReactDOM.findDOMNode(this))[this.sizeProp];
         }
     },
-    setScrollClient: function(scrollClient, scrollCallback) {
+    setScrollClient: function (scrollClient, scrollCallback) {
         this.scrollClient = scrollClient;
         this.scrollEvent.callback = scrollCallback;
     },
-    getScrollPercent: function() {
+    getScrollPercent: function () {
         var maxOffset = this.getScrollSize() - this.state.size;
         return maxOffset <= 0 ? 0 : this.state.thumbOffset / maxOffset;
     },
-    refresh: function() {
+    refresh: function () {
         if (this.scrollClient) {
             var scrolledElement = this.scrollClient.children[0];
 
@@ -1830,7 +1832,7 @@ var scrollBarMixin = {
 
         }
     },
-    scroll: function(amount, mode) {
+    scroll: function (amount, mode) {
         if (this.state.size > 0) {
             if (mode == 1) amount *= 8;
 
@@ -1848,12 +1850,12 @@ var scrollBarMixin = {
         }
         return false;
     },
-    onWheel: function(e) {
+    onWheel: function (e) {
         this.scroll(e.deltaY, e.deltaMode);
         e.stopPropagation();
         e.preventDefault();
     },
-    render: function() {
+    render: function () {
         var self = this;
 
         var thumbStyle = {
@@ -1890,7 +1892,7 @@ function ScrollEvent(scrollBarComp) {
     var self = this;
     this.scrollBarComp = scrollBarComp;
     this.callback = null;
-    this.raise = function() {
+    this.raise = function () {
         if (self.callback) {
             self.callback(self.scrollBarComp.getScrollPercent());
         }
@@ -1925,21 +1927,21 @@ module.exports.FilterPanel = react.createClass({
     pgridwidget: null,
     values: null,
     filterManager: null,
-    getInitialState: function() {
+    getInitialState: function () {
         this.pgridwidget = this.props.pivotTableComp.pgridwidget;
         return {};
     },
-    destroy: function() {
-        var container = this.getDOMNode().parentNode;
+    destroy: function () {
+        var container = ReactDOM.findDOMNode(this).parentNode;
         React.unmountComponentAtNode(container);
         container.parentNode.removeChild(container);
     },
-    onFilter: function(operator, term, staticValue, excludeStatic) {
+    onFilter: function (operator, term, staticValue, excludeStatic) {
         this.props.pivotTableComp.applyFilter(this.props.field, operator, term, staticValue, excludeStatic);
         this.destroy();
     },
-    onMouseDown: function(e) {
-        var container = this.getDOMNode().parentNode;
+    onMouseDown: function (e) {
+        var container = ReactDOM.findDOMNode(this).parentNode;
         var target = e.target;
         while (target != null) {
             if (target == container) {
@@ -1950,7 +1952,7 @@ module.exports.FilterPanel = react.createClass({
 
         this.destroy();
     },
-    onMouseWheel: function(e) {
+    onMouseWheel: function (e) {
         var valuesTable = this.refs.valuesTable.getDOMNode();
         var target = e.target;
         while (target != null) {
@@ -1966,20 +1968,20 @@ module.exports.FilterPanel = react.createClass({
 
         this.destroy();
     },
-    componentWillMount: function() {
+    componentWillMount: function () {
         document.addEventListener('mousedown', this.onMouseDown);
         document.addEventListener('wheel', this.onMouseWheel);
         window.addEventListener('resize', this.destroy);
     },
-    componentDidMount: function() {
-        this.filterManager.init(this.getDOMNode());
+    componentDidMount: function () {
+        this.filterManager.init(ReactDOM.findDOMNode(this));
     },
-    componentWillUnmount: function() {
+    componentWillUnmount: function () {
         document.removeEventListener('mousedown', this.onMouseDown);
         document.removeEventListener('wheel', this.onMouseWheel);
         window.removeEventListener('resize', this.destroy);
     },
-    render: function() {
+    render: function () {
         var Dropdown = comps.Dropdown;
         var checkboxes = [];
 
@@ -2152,7 +2154,7 @@ function FilterManager(reactComp, initialFilterObject) {
 
     var resizeManager;
 
-    this.init = function(filterContainerElement) {
+    this.init = function (filterContainerElement) {
 
         elems.filterContainer = filterContainerElement;
         elems.checkboxes = {};
@@ -2179,7 +2181,7 @@ function FilterManager(reactComp, initialFilterObject) {
         addEventListeners();
     };
 
-    this.onOperatorChanged = function(newOperator) {
+    this.onOperatorChanged = function (newOperator) {
         if (operator.name !== newOperator) {
             operator = filtering.Operators.get(newOperator);
             self.toggleRegexpButtonVisibility();
@@ -2236,11 +2238,11 @@ function FilterManager(reactComp, initialFilterObject) {
 
         elems.clearSearchButton.addEventListener('click', self.clearSearchBox);
 
-        elems.okButton.addEventListener('click', function() {
+        elems.okButton.addEventListener('click', function () {
             var checkedObj = self.getCheckedValues();
             reactComp.onFilter(operator.name, operator.regexpSupported && isSearchMode && isRegexMode ? new RegExp(lastSearchTerm, 'i') : lastSearchTerm, checkedObj.values, checkedObj.toExclude);
         });
-        elems.cancelButton.addEventListener('click', function() {
+        elems.cancelButton.addEventListener('click', function () {
             reactComp.destroy();
         });
     }
@@ -2256,7 +2258,7 @@ function FilterManager(reactComp, initialFilterObject) {
         };
         var isMouseDown = false;
 
-        this.resizeMouseDown = function(e) {
+        this.resizeMouseDown = function (e) {
             // drag/sort with left mouse button
             if (e.button !== 0) return;
 
@@ -2271,13 +2273,13 @@ function FilterManager(reactComp, initialFilterObject) {
             e.preventDefault();
         };
 
-        this.resizeMouseUp = function() {
+        this.resizeMouseUp = function () {
             isMouseDown = false;
             document.body.style.cursor = 'auto';
             return true;
         };
 
-        this.resizeMouseMove = function(e) {
+        this.resizeMouseMove = function (e) {
             // if the mouse is not down while moving, return (no drag)
             if (!isMouseDown) return;
 
@@ -2317,12 +2319,12 @@ function FilterManager(reactComp, initialFilterObject) {
         document.addEventListener('mousemove', this.resizeMouseMove);
     }
 
-    this.clearSearchBox = function() {
+    this.clearSearchBox = function () {
         elems.searchBox.value = '';
         self.searchChanged();
     };
 
-    this.toggleRegexpButtonVisibility = function() {
+    this.toggleRegexpButtonVisibility = function () {
         if (operator.regexpSupported) {
             elems.enableRegexButton.addEventListener('click', self.regexpActiveChanged);
             reactUtils.removeClass(elems.enableRegexButton, 'srchtyp-col-hidden');
@@ -2333,7 +2335,7 @@ function FilterManager(reactComp, initialFilterObject) {
         }
     };
 
-    this.toggleRegexpButtonState = function() {
+    this.toggleRegexpButtonState = function () {
         elems.enableRegexButton.className = elems.enableRegexButton.className.replace('srchtyp-col-active', '');
         if (isRegexMode) {
             reactUtils.addClass(elems.enableRegexButton, 'srchtyp-col-active');
@@ -2342,13 +2344,13 @@ function FilterManager(reactComp, initialFilterObject) {
         }
     };
 
-    this.regexpActiveChanged = function() {
+    this.regexpActiveChanged = function () {
         isRegexMode = !isRegexMode;
         self.toggleRegexpButtonState();
         self.searchChanged('regexModeChanged');
     };
 
-    this.valueChecked = function(e) {
+    this.valueChecked = function (e) {
         var target = e.target;
         if (target && target.type && target.type === 'checkbox') {
             if (target == elems.allCheckbox) {
@@ -2361,7 +2363,7 @@ function FilterManager(reactComp, initialFilterObject) {
         }
     };
 
-    this.applyFilterTerm = function(operator, term) {
+    this.applyFilterTerm = function (operator, term) {
         var defaultVisible = term ? false : true;
         var opterm = operator.regexpSupported && isSearchMode ? (isRegexMode ? term : utils.escapeRegex(term)) : term;
         checkboxVisible(elems.allCheckbox, defaultVisible);
@@ -2374,7 +2376,7 @@ function FilterManager(reactComp, initialFilterObject) {
         }
     };
 
-    this.searchChanged = function(e) {
+    this.searchChanged = function (e) {
         var search = (elems.searchBox.value || '').trim();
         if (e === 'operatorChanged' || (e === 'regexModeChanged' && search) || search != lastSearchTerm) {
             lastSearchTerm = search;
@@ -2399,7 +2401,7 @@ function FilterManager(reactComp, initialFilterObject) {
         }
     };
 
-    this.getCheckedValues = function() {
+    this.getCheckedValues = function () {
         if (!isSearchMode && !elems.allCheckbox.indeterminate) {
             return {
                 values: elems.allCheckbox.checked ? filtering.ALL : filtering.NONE,
@@ -2451,16 +2453,16 @@ function FilterManager(reactComp, initialFilterObject) {
         }
     };
 
-    this.updateCheckboxes = function(checkedList) {
+    this.updateCheckboxes = function (checkedList) {
         var values = checkedList ? checkedList.values : null;
         var allchecked = utils.isArray(values) ?
             null :
             (values == null || values === filtering.ALL ?
-                true :
-                (values === filtering.NONE ?
-                    false :
-                    !!values
-                )
+                    true :
+                    (values === filtering.NONE ?
+                            false :
+                            !!values
+                    )
             );
         for (var i = 0; i < reactComp.values.length; i++) {
             var val = reactComp.values[i];
@@ -2476,7 +2478,7 @@ function FilterManager(reactComp, initialFilterObject) {
         }
     };
 
-    this.updateAllCheckbox = function() {
+    this.updateAllCheckbox = function () {
         if (!isSearchMode) {
             var allchecked = null;
             for (var i = 0; i < reactComp.values.length; i++) {
@@ -2510,7 +2512,7 @@ function FilterManager(reactComp, initialFilterObject) {
 'use strict';
 
 module.exports.Dropdown = react.createClass({
-    openOrClose: function(e) {
+    openOrClose: function (e) {
         var valueNode = this.refs.valueElement.getDOMNode();
         var valuesListNode = this.refs.valuesList.getDOMNode();
         if (e.target === valueNode && valuesListNode.style.display === 'none') {
@@ -2519,21 +2521,21 @@ module.exports.Dropdown = react.createClass({
             valuesListNode.style.display = 'none';
         }
     },
-    onMouseEnter: function() {
+    onMouseEnter: function () {
         var valueNode = this.refs.valueElement.getDOMNode();
         valueNode.className = "orb-tgl-btn-down";
         valueNode.style.backgroundPosition = 'right center';
     },
-    onMouseLeave: function() {
+    onMouseLeave: function () {
         this.refs.valueElement.getDOMNode().className = "";
     },
-    componentDidMount: function() {
+    componentDidMount: function () {
         document.addEventListener('click', this.openOrClose);
     },
-    componentWillUnmount: function() {
+    componentWillUnmount: function () {
         document.removeEventListener('click', this.openOrClose);
     },
-    selectValue: function(e) {
+    selectValue: function (e) {
         var listNode = this.refs.valuesList.getDOMNode();
         var target = e.target;
         var isli = false;
@@ -2556,9 +2558,9 @@ module.exports.Dropdown = react.createClass({
             }
         }
     },
-    render: function() {
+    render: function () {
         function createSelectValueFunc(value) {
-            return function() {
+            return function () {
                 this.selectValue(value);
             };
         }
@@ -2603,7 +2605,7 @@ module.exports.Dropdown = react.createClass({
 'use strict';
 
 module.exports.Grid = react.createClass({
-    render: function() {
+    render: function () {
         var data = this.props.data;
         var headers = this.props.headers;
         var tableClasses = this.props.theme.getGridClasses();
@@ -2670,23 +2672,23 @@ function createOverlay() {
 
 var Dialog = module.exports.Dialog = react.createClass({
     statics: {
-        create: function() {
+        create: function () {
             var dialogFactory = React.createFactory(Dialog);
             var overlay = createOverlay();
 
             return {
-                show: function(props) {
+                show: function (props) {
                     React.render(dialogFactory(props), overlay);
                 }
             };
         }
     },
     overlayElement: null,
-    setOverlayClass: function(visible) {
+    setOverlayClass: function (visible) {
         this.overlayElement.className = this.props.theme.getDialogClasses(visible).overlay;
     },
-    componentDidMount: function() {
-        this.overlayElement = this.getDOMNode().parentNode;
+    componentDidMount: function () {
+        this.overlayElement = ReactDOM.findDOMNode(this).parentNode;
         this.setOverlayClass(true);
         this.overlayElement.addEventListener('click', this.close);
 
@@ -2706,14 +2708,14 @@ var Dialog = module.exports.Dialog = react.createClass({
         dialogBodyElement.style.width = dWidth + 'px';
         dialogBodyElement.style.height = (dHeight - 45) + 'px';
     },
-    close: function(e) {
+    close: function (e) {
         if (e.target == this.overlayElement || e.target.className === 'button-close') {
             this.overlayElement.removeEventListener('click', this.close);
             React.unmountComponentAtNode(this.overlayElement);
             this.setOverlayClass(false);
         }
     },
-    render: function() {
+    render: function () {
         if (this.props.comp) {
             var comp = React.createElement(this.props.comp.type, this.props.comp.props);
             var classes = this.props.theme.getDialogClasses();
@@ -2752,28 +2754,29 @@ var Dialog = module.exports.Dialog = react.createClass({
 
 module.exports.Toolbar = react.createClass({
     _toInit: [],
-    componentDidMount: function() {
+    componentDidMount: function () {
+        for (var i = 0; i < this._toInit.length; i++) {
+            var btn = this._toInit[i];
+            btn.init(this.props.pivotTableComp, ReactDOM.findDOMNode(this.refs[btn.ref]));
+            // btn.init(this.props.pivotTableComp, this.refs[btn.ref].getDOMNode());
+        }
+    },
+    componentDidUpdate: function () {
         for (var i = 0; i < this._toInit.length; i++) {
             var btn = this._toInit[i];
             btn.init(this.props.pivotTableComp, this.refs[btn.ref].getDOMNode());
         }
     },
-    componentDidUpdate: function() {
-        for (var i = 0; i < this._toInit.length; i++) {
-            var btn = this._toInit[i];
-            btn.init(this.props.pivotTableComp, this.refs[btn.ref].getDOMNode());
-        }
-    },
-    createCallback: function(action) {
+    createCallback: function (action) {
         if (action != null) {
             var pgridComponent = this.props.pivotTableComp;
-            return function(e) {
+            return function (e) {
                 action(pgridComponent, e.target);
             };
         }
         return null;
     },
-    render: function() {
+    render: function () {
 
         var config = this.props.pivotTableComp.pgridwidget.pgrid.config;
 
@@ -2827,7 +2830,7 @@ module.exports.Toolbar = react.createClass({
 var excelExport = require('../orb.export.excel');
 
 var defaultToolbarConfig = {
-    exportToExcel: function(pgridComponent, button) {
+    exportToExcel: function (pgridComponent, button) {
         var a = document.createElement('a');
         a.download = "orbpivotgrid.xls";
         a.href = excelExport(pgridComponent.props.pgridwidget);
@@ -2835,19 +2838,19 @@ var defaultToolbarConfig = {
         a.click();
         document.body.removeChild(a);
     },
-    expandAllRows: function(pgridComponent, button) {
+    expandAllRows: function (pgridComponent, button) {
         pgridComponent.toggleFieldExpansion(axe.Type.ROWS, null, true);
     },
-    collapseAllRows: function(pgridComponent, button) {
+    collapseAllRows: function (pgridComponent, button) {
         pgridComponent.toggleFieldExpansion(axe.Type.ROWS, null, false);
     },
-    expandAllColumns: function(pgridComponent, button) {
+    expandAllColumns: function (pgridComponent, button) {
         pgridComponent.toggleFieldExpansion(axe.Type.COLUMNS, null, true);
     },
-    collapseAllColumns: function(pgridComponent, button) {
+    collapseAllColumns: function (pgridComponent, button) {
         pgridComponent.toggleFieldExpansion(axe.Type.COLUMNS, null, false);
     },
-    updateSubtotalsButton: function(axetype, pgridComponent, button) {
+    updateSubtotalsButton: function (axetype, pgridComponent, button) {
         var subTotalsState = pgridComponent.pgridwidget.areSubtotalsVisible(axetype);
         button.style.display = subTotalsState === null ? 'none' : '';
 
@@ -2864,20 +2867,20 @@ var defaultToolbarConfig = {
         reactUtils.removeClass(button, classToRemove);
         reactUtils.addClass(button, classToAdd);
     },
-    initSubtotals: function(axetype) {
+    initSubtotals: function (axetype) {
         var self = this;
-        return function(pgridComponent, button) {
+        return function (pgridComponent, button) {
             self.updateSubtotalsButton(axetype, pgridComponent, button);
         };
     },
-    toggleSubtotals: function(axetype) {
+    toggleSubtotals: function (axetype) {
         var self = this;
-        return function(pgridComponent, button) {
+        return function (pgridComponent, button) {
             pgridComponent.toggleSubtotals(axetype);
             self.updateSubtotalsButton(axetype, pgridComponent, button);
         };
     },
-    updateGrandtotalButton: function(axetype, pgridComponent, button) {
+    updateGrandtotalButton: function (axetype, pgridComponent, button) {
         var subTotalsState = pgridComponent.pgridwidget.isGrandtotalVisible(axetype);
         button.style.display = subTotalsState === null ? 'none' : '';
 
@@ -2894,15 +2897,15 @@ var defaultToolbarConfig = {
         reactUtils.removeClass(button, classToRemove);
         reactUtils.addClass(button, classToAdd);
     },
-    initGrandtotal: function(axetype) {
+    initGrandtotal: function (axetype) {
         var self = this;
-        return function(pgridComponent, button) {
+        return function (pgridComponent, button) {
             self.updateGrandtotalButton(axetype, pgridComponent, button);
         };
     },
-    toggleGrandtotal: function(axetype) {
+    toggleGrandtotal: function (axetype) {
         var self = this;
-        return function(pgridComponent, button) {
+        return function (pgridComponent, button) {
             pgridComponent.toggleGrandtotal(axetype);
             self.updateGrandtotalButton(axetype, pgridComponent, button);
         };
@@ -2967,4 +2970,4 @@ defaultToolbarConfig.buttons = [{
     tooltip: 'Export to Excel',
     cssClass: 'export-xls',
     action: defaultToolbarConfig.exportToExcel
-}, ];
+},];
