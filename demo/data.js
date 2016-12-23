@@ -1,10 +1,10 @@
-var data = [{
+var datas = [{
     "_id": "585cd2b458eddc02e51f8782",
     "modified": "2016-12-23T07:31:03.827Z",
     "team": "ry6h9Dp7e",
     "org": "c2307910-95d8-11e6-b22a-b9a1ce20a60e",
     "account": "HJNbiD6Qg",
-    "date": "2016-12-22T07:31:00.538Z",
+    "date": "2016-12-22",
     "accountNickname": "xiaolian22",
     "accountUsername": "ixoafj",
     "customerAccountId": "584ff40564a30a186299db4b",
@@ -18,7 +18,7 @@ var data = [{
     "team": "ry6h9Dp7e",
     "org": "c2307910-95d8-11e6-b22a-b9a1ce20a60e",
     "account": "HJNbiD6Qg",
-    "date": "2016-12-22T07:31:38.726Z",
+    "date": "2016-12-22",
     "accountNickname": "拖拖拖",
     "accountUsername": "舒服舒服",
     "customerAccountId": "5850c00dcc26b604413c5c1d",
@@ -33,7 +33,7 @@ var data = [{
     "org": "c2307910-95d8-11e6-b22a-b9a1ce20a60e",
     "account": "HJNbiD6Qg",
     "customerAccountId": "584ff40564a30a186299db4b",
-    "date": "2016-12-23T07:30:57.460Z",
+    "date": "2016-12-23",
     "accountNickname": "xiaolian22",
     "accountId": "xiaolian11",
     "consumption": 11,
@@ -48,7 +48,7 @@ var data = [{
     "org": "c2307910-95d8-11e6-b22a-b9a1ce20a60e",
     "account": "HJNbiD6Qg",
     "customerAccountId": "5850c00dcc26b604413c5c1d",
-    "date": "2016-12-23T07:31:36.343Z",
+    "date": "2016-12-23",
     "accountNickname": "拖拖拖",
     "accountId": "我的",
     "consumption": 44,
@@ -57,3 +57,11 @@ var data = [{
     "accountUsername": "舒服舒服",
     "materialPlan": 22
 }];
+
+module.exports = function (metadatas) {
+    return datas.map((item) => {
+        return metadatas.map((metaItem) => {
+            return item[metaItem.caption];
+        })
+    });
+};

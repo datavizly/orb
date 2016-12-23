@@ -1,6 +1,7 @@
 var React = require("react");
 var ReactDOM = require("react-dom");
 var orb = require('../src/js/orb.js');
+var GetData = require('./data');
 
 function refreshData() {
     pgridwidget.refreshData(window.demo.data);
@@ -16,30 +17,27 @@ function exportToExcel(anchor) {
 }
 
 
+let fields = [
+    {name: '0', caption: '_id'},
+    {name: '1', caption: 'account', label: '部门成员'},
+    {name: '2', caption: 'accountNickname', label: '客户账号'},
+    {
+        name: '3', caption: 'consumption', label: '消耗值',
+        dataSettings: {
+            aggregateFunc: 'avg',
+            formatFunc: function (value) {
+                return Number(value).toFixed(0);
+            }
+        }
+    },
+    {name: '4', caption: 'plan', label: '计划消耗值'},
+    {name: '5', caption: 'materialCount', label: '素材数'},
+    {name: '6', caption: 'materialPlan', label: '计划素材数'},
+    {name: '7', caption: 'date', label: '消耗值'},
+];
 var config = {
     // dataSource: window.demo.data,
-    dataSource: [
-        [
-            "585cd2b158eddc02e51f8781",
-            "HJNbiD6Qg",
-            "xiaolian22",
-            11,
-            22,
-            44,
-            33,
-            "2016-12-23"
-        ],
-        [
-            "585cd2b158eddc02e51f8781",
-            "HJNbiD6Qg",
-            "xiaolian22",
-            11,
-            22,
-            44,
-            33,
-            "2016-12-22"
-        ]
-    ],
+    dataSource: GetData(fields),
     canMoveFields: true,
     dataHeadersLocation: 'columns',
     // width: 1500,
@@ -68,24 +66,7 @@ var config = {
         collapsed: true,
         collapsible: true
     },
-    fields: [
-        {name: '0', caption: '_id'},
-        {name: '1', caption: 'account', label: '部门成员'},
-        {name: '2', caption: 'accountNickname', label: '客户账号'},
-        {
-            name: '3', caption: 'consumption', label: '消耗值',
-            dataSettings: {
-                aggregateFunc: 'avg',
-                formatFunc: function (value) {
-                    return Number(value).toFixed(0);
-                }
-            }
-        },
-        {name: '4', caption: 'plan', label: '计划消耗值'},
-        {name: '5', caption: 'materialCount', label: '素材数'},
-        {name: '6', caption: 'materialPlan', label: '计划素材数'},
-        {name: '7', caption: 'date', label: '消耗值'},
-    ],
+    fields: fields,
     // fields: [
     //     {name: '0', caption: 'Entity'},
     //     {name: '1', caption: 'Product'},
