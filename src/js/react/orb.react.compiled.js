@@ -110,27 +110,29 @@ module.exports.PivotTable = react.createClass({
         var colHeadersContainerNode = ReactDOM.findDOMNode(this.refs.colHeadersContainer);
         var rowHeadersContainerNode = ReactDOM.findDOMNode(this.refs.rowHeadersContainer);
 
-        this.refs.horizontalScrollBar.setScrollClient(dataCellsContainerNode, function (scrollPercent) {
-            var scrollAmount = Math.ceil(
-                scrollPercent * (
-                    reactUtils.getSize(dataCellsTableNode).width -
-                    reactUtils.getSize(dataCellsContainerNode).width
-                )
-            );
-            colHeadersContainerNode.scrollLeft = scrollAmount;
-            dataCellsContainerNode.scrollLeft = scrollAmount;
-        });
+        if (this.refs.verticalScrollBar)
+            this.refs.horizontalScrollBar.setScrollClient(dataCellsContainerNode, function (scrollPercent) {
+                var scrollAmount = Math.ceil(
+                    scrollPercent * (
+                        reactUtils.getSize(dataCellsTableNode).width -
+                        reactUtils.getSize(dataCellsContainerNode).width
+                    )
+                );
+                colHeadersContainerNode.scrollLeft = scrollAmount;
+                dataCellsContainerNode.scrollLeft = scrollAmount;
+            });
 
-        this.refs.verticalScrollBar.setScrollClient(dataCellsContainerNode, function (scrollPercent) {
-            var scrollAmount = Math.ceil(
-                scrollPercent * (
-                    reactUtils.getSize(dataCellsTableNode).height -
-                    reactUtils.getSize(dataCellsContainerNode).height
-                )
-            );
-            rowHeadersContainerNode.scrollTop = scrollAmount;
-            dataCellsContainerNode.scrollTop = scrollAmount;
-        });
+        if (this.refs.verticalScrollBar)
+            this.refs.verticalScrollBar.setScrollClient(dataCellsContainerNode, function (scrollPercent) {
+                var scrollAmount = Math.ceil(
+                    scrollPercent * (
+                        reactUtils.getSize(dataCellsTableNode).height -
+                        reactUtils.getSize(dataCellsContainerNode).height
+                    )
+                );
+                rowHeadersContainerNode.scrollTop = scrollAmount;
+                dataCellsContainerNode.scrollTop = scrollAmount;
+            });
 
         this.synchronizeCompsWidths();
     },
@@ -246,8 +248,8 @@ module.exports.PivotTable = react.createClass({
             var dataCellsTableHeight = Math.ceil(Math.min(
                 pivotContainerHeight -
                 (nodes.toolbar ? nodes.toolbar.size.height + 17 : 0) -
-                nodes.upperbuttonsRow.size.height -
-                nodes.columnbuttonsRow.size.height -
+                (nodes.upperbuttonsRow ? nodes.upperbuttonsRow.size.height : 0) -
+                (nodes.columnbuttonsRow ? nodes.columnbuttonsRow.size.height : 0) -
                 nodes.colHeadersTable.size.height -
                 nodes.horizontalScrollBar.size.height,
                 nodes.dataCellsTable.size.height));
@@ -334,7 +336,7 @@ module.exports.PivotTable = react.createClass({
                         })
                     ),
                     React.createElement("tbody", null,
-                        React.createElement("tr", {
+                        config.upperButtons && config.upperButtons.visible ? React.createElement("tr", {
                                 ref: "upperbuttonsRow"
                             },
                             React.createElement("td", {
@@ -344,8 +346,8 @@ module.exports.PivotTable = react.createClass({
                                     pivotTableComp: self
                                 })
                             )
-                        ),
-                        React.createElement("tr", {
+                        ) : null,
+                        config.upperButtons && config.upperButtons.visible ? React.createElement("tr", {
                                 ref: "columnbuttonsRow"
                             },
                             React.createElement("td", null),
@@ -361,7 +363,7 @@ module.exports.PivotTable = react.createClass({
                             React.createElement("td", {
                                 colSpan: "2"
                             })
-                        ),
+                        ) : null,
                         React.createElement("tr", null,
                             React.createElement("td", {
                                     style: {
@@ -1933,7 +1935,7 @@ module.exports.FilterPanel = react.createClass({
     },
     destroy: function () {
         var container = ReactDOM.findDOMNode(this).parentNode;
-        React.unmountComponentAtNode(container);
+        ReactDOM.unmountComponentAtNode(container);
         container.parentNode.removeChild(container);
     },
     onFilter: function (operator, term, staticValue, excludeStatic) {
@@ -2711,7 +2713,7 @@ var Dialog = module.exports.Dialog = react.createClass({
     close: function (e) {
         if (e.target == this.overlayElement || e.target.className === 'button-close') {
             this.overlayElement.removeEventListener('click', this.close);
-            React.unmountComponentAtNode(this.overlayElement);
+            ReactDOM.unmountComponentAtNode(this.overlayElement);
             this.setOverlayClass(false);
         }
     },

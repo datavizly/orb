@@ -3,7 +3,7 @@
 
 'use strict';
 
-module.exports = (function() {
+module.exports = (function () {
 
     var currentTheme = 'blue';
     var themeManager = {};
@@ -20,10 +20,11 @@ module.exports = (function() {
         flower: '#A74AC7',
         gray: '#808080',
         black: '#000000',
-        white: '#FFFFFF'
+        white: '#FFFFFF',
+        gray2: 'rgb(232, 232, 230)',
     };
 
-    themeManager.current = function(newTheme) {
+    themeManager.current = function (newTheme) {
         if (newTheme) {
             currentTheme = themeManager.validateTheme(newTheme);
         }
@@ -31,7 +32,7 @@ module.exports = (function() {
         return currentTheme;
     };
 
-    themeManager.validateTheme = function(themeName) {
+    themeManager.validateTheme = function (themeName) {
         themeName = (themeName || '').toString().trim();
         if (!themeManager.themes[themeName] && themeName !== 'bootstrap') {
             return 'blue';
@@ -40,14 +41,14 @@ module.exports = (function() {
         }
     };
 
-    themeManager.getPivotClasses = function() {
+    themeManager.getPivotClasses = function () {
         return {
             container: 'orb-container orb-' + currentTheme,
             table: 'orb' + (isBootstrap() ? ' table' : '')
         };
     };
 
-    themeManager.getButtonClasses = function() {
+    themeManager.getButtonClasses = function () {
         return {
             pivotButton: 'fld-btn' + (isBootstrap() ? ' btn btn-default btn-xs' : ''),
             orbButton: 'orb-btn' + (isBootstrap() ? ' btn btn-default btn-xs' : ''),
@@ -55,19 +56,19 @@ module.exports = (function() {
         };
     };
 
-    themeManager.getFilterClasses = function() {
+    themeManager.getFilterClasses = function () {
         return {
             container: 'orb-' + currentTheme + ' orb fltr-cntnr'
         };
     };
 
-    themeManager.getGridClasses = function() {
+    themeManager.getGridClasses = function () {
         return {
             table: isBootstrap() ? 'table table-condensed' : 'orb-table'
         };
     };
 
-    themeManager.getDialogClasses = function(visible) {
+    themeManager.getDialogClasses = function (visible) {
         var classes = {
             overlay: 'orb-overlay orb-overlay-' + (visible ? 'visible' : 'hidden') + ' orb-' + currentTheme,
             dialog: 'orb-dialog',
@@ -89,7 +90,7 @@ module.exports = (function() {
     };
 
     var utils = themeManager.utils = {
-        hexToRgb: function(hex) {
+        hexToRgb: function (hex) {
             var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
             return result ? {
                 r: parseInt(result[1], 16),
@@ -97,9 +98,9 @@ module.exports = (function() {
                 b: parseInt(result[3], 16)
             } : null;
         },
-        rgbaToHex: function(rgba) {
+        rgbaToHex: function (rgba) {
             var matches = rgba.match(/rgba\((\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+(?:\.\d+)?)\s*\)/);
-            if(matches) {
+            if (matches) {
                 var alpah = parseFloat(matches[4]);
                 return '#' +
                     utils.applyAlphaAndToHex(matches[1], alpah) +
@@ -108,17 +109,17 @@ module.exports = (function() {
             }
             return null;
         },
-        applyAlphaAndToHex: function(value, alpha) {
-           return (Math.floor(alpha*parseInt(value) + (1-alpha)*255) + 256).toString(16).substr(1,2);
+        applyAlphaAndToHex: function (value, alpha) {
+            return (Math.floor(alpha * parseInt(value) + (1 - alpha) * 255) + 256).toString(16).substr(1, 2);
         },
-        fadeoutColor: function(color, alpha) {
+        fadeoutColor: function (color, alpha) {
             color = utils.hexToRgb(color);
             return '#' +
-               utils.applyAlphaAndToHex(color.r, alpha) +
-               utils.applyAlphaAndToHex(color.g, alpha) +
-               utils.applyAlphaAndToHex(color.b, alpha);
+                utils.applyAlphaAndToHex(color.r, alpha) +
+                utils.applyAlphaAndToHex(color.g, alpha) +
+                utils.applyAlphaAndToHex(color.b, alpha);
         }
-     };
+    };
 
     return themeManager;
 }());

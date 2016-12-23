@@ -19,12 +19,23 @@ var config = {
     dataSource: window.demo.data,
     canMoveFields: true,
     dataHeadersLocation: 'columns',
-    width: 1099,
-    height: 611,
-    theme: 'green',
+    // width: 1500,
+    // height: 611,
+    theme: 'gray',
+
     toolbar: {
         visible: false
     },
+    upperButtons: {
+        visible: false
+    },
+    columnButtons: {
+        visible: false
+    },
+    scrollBar: {
+        visible: true
+    },
+
     grandTotal: {
         rowsvisible: false,
         columnsvisible: false
@@ -43,7 +54,7 @@ var config = {
     },
     columnSettings: {
         subTotal: {
-            visible: false,
+            visible: true,
             collapsed: true,
             collapsible: true
         }

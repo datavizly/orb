@@ -53,7 +53,7 @@ var Dialog = module.exports.Dialog = react.createClass({
   close: function(e) {
     if(e.target == this.overlayElement || e.target.className === 'button-close') {
       this.overlayElement.removeEventListener('click', this.close);
-      React.unmountComponentAtNode(this.overlayElement);
+      ReactDOM.unmountComponentAtNode(this.overlayElement);
       this.setOverlayClass(false);
     }
   },
