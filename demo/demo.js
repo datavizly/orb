@@ -77,7 +77,7 @@ var config = {
             rowSettings: {
                 subTotal: {
                     visible: false,
-                    collapsed: true,
+                    collapsed: false,
                     collapsible: true
                 }
             },
@@ -99,7 +99,7 @@ var config = {
             aggregateFunc: 'sum'
         }
     ],
-    rows: ['Manufacturer','Category'],//, 'Category' ],
+    rows: ['Manufacturer', 'Category'],//, 'Category' ],
     columns: ['Class'],
     data: ['Quantity', 'Amount'],
     /*preFilters : {

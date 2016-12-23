@@ -23,39 +23,39 @@ module.exports.PivotTable = react.createClass({
   },
   sort: function(axetype, field) {
     this.pgridwidget.sort(axetype, field);
-    this.setProps({});
+    this.setState({});
   },
   moveButton: function(button, newAxeType, position) {
     if(this.pgridwidget.moveField(button.props.field.name, button.props.axetype, newAxeType, position)) {
-      this.setProps({});
+      this.setState({});
     }
   },
   toggleFieldExpansion: function(axetype, field, newState) {
     if(this.pgridwidget.toggleFieldExpansion(axetype, field, newState)) {
-      this.setProps({});
+      this.setState({});
     }
   },
   toggleSubtotals: function(axetype) {
     if(this.pgridwidget.toggleSubtotals(axetype)) {
-      this.setProps({});
+      this.setState({});
     }
   },
   toggleGrandtotal: function(axetype) {
     if(this.pgridwidget.toggleGrandtotal(axetype)) {
-      this.setProps({});
+      this.setState({});
     }
   },
   expandRow: function(cell) {
     cell.expand();
-    this.setProps({});
+    this.setState({});
   },
   collapseRow: function(cell) {
     cell.subtotalHeader.collapse();
-    this.setProps({});
+    this.setState({});
   },
   applyFilter: function(fieldname, operator, term, staticValue, excludeStatic) {
     this.pgridwidget.applyFilter(fieldname, operator, term, staticValue, excludeStatic);
-    this.setProps({});
+    this.setState({});
   },
   registerThemeChanged: function(compCallback) {
     if(compCallback) {

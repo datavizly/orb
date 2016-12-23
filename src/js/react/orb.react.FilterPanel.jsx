@@ -5,6 +5,8 @@
 
 'use strict';
 
+import ReactDOM from 'react-dom';
+
 module.exports.FilterPanel = react.createClass({
 	pgridwidget: null,
 	values: null,
@@ -14,8 +16,8 @@ module.exports.FilterPanel = react.createClass({
 		return {};
 	},
 	destroy: function() {
-		var container = this.getDOMNode().parentNode;
-		React.unmountComponentAtNode(container);
+		var container = ReactDOM.find(this).parentNode;
+        ReactDOM.unmountComponentAtNode(container);
 		container.parentNode.removeChild(container);
 	},
 	onFilter: function(operator, term, staticValue, excludeStatic) {
@@ -89,7 +91,7 @@ module.exports.FilterPanel = react.createClass({
 		}
 
 		var buttonClass = this.props.pivotTableComp.pgrid.config.theme.getButtonClasses().orbButton;
-		var pivotStyle = window.getComputedStyle(this.props.pivotTableComp.getDOMNode(), null );
+		var pivotStyle = window.getComputedStyle(ReactDOM.findDOMNode(this.props.pivotTableComp), null );
 		var style = {
 			fontFamily: pivotStyle.getPropertyValue('font-family'),
             fontSize: pivotStyle.getPropertyValue('font-size')

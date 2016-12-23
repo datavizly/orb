@@ -42,39 +42,39 @@ module.exports.PivotTable = react.createClass({
     },
     sort: function (axetype, field) {
         this.pgridwidget.sort(axetype, field);
-        this.setProps({});
+        this.setState({});
     },
     moveButton: function (button, newAxeType, position) {
         if (this.pgridwidget.moveField(button.props.field.name, button.props.axetype, newAxeType, position)) {
-            this.setProps({});
+            this.setState({});
         }
     },
     toggleFieldExpansion: function (axetype, field, newState) {
         if (this.pgridwidget.toggleFieldExpansion(axetype, field, newState)) {
-            this.setProps({});
+            this.setState({});
         }
     },
     toggleSubtotals: function (axetype) {
         if (this.pgridwidget.toggleSubtotals(axetype)) {
-            this.setProps({});
+            this.setState({});
         }
     },
     toggleGrandtotal: function (axetype) {
         if (this.pgridwidget.toggleGrandtotal(axetype)) {
-            this.setProps({});
+            this.setState({});
         }
     },
     expandRow: function (cell) {
         cell.expand();
-        this.setProps({});
+        this.setState({});
     },
     collapseRow: function (cell) {
         cell.subtotalHeader.collapse();
-        this.setProps({});
+        this.setState({});
     },
     applyFilter: function (fieldname, operator, term, staticValue, excludeStatic) {
         this.pgridwidget.applyFilter(fieldname, operator, term, staticValue, excludeStatic);
-        this.setProps({});
+        this.setState({});
     },
     registerThemeChanged: function (compCallback) {
         if (compCallback) {
@@ -1262,7 +1262,7 @@ module.exports.PivotButton = react.createClass({
         // left mouse button only
         if (e.button !== 0) return;
 
-        var filterButton = this.refs.filterButton.getDOMNode();
+        var filterButton = ReactDOM.findDOMNode(this.refs.filterButton);
         var filterButtonPos = reactUtils.getOffset(filterButton);
         var filterContainer = document.createElement('div');
 
@@ -1277,7 +1277,7 @@ module.exports.PivotButton = react.createClass({
         filterContainer.style.left = filterButtonPos.x + 'px';
         document.body.appendChild(filterContainer);
 
-        React.render(filterPanel, filterContainer);
+        ReactDOM.render(filterPanel, filterContainer);
 
         // prevent event bubbling (to prevent text selection while dragging for example)
         e.stopPropagation();
@@ -1933,7 +1933,7 @@ module.exports.FilterPanel = react.createClass({
     },
     destroy: function () {
         var container = ReactDOM.findDOMNode(this).parentNode;
-        React.unmountComponentAtNode(container);
+        ReactDOM.unmountComponentAtNode(container);
         container.parentNode.removeChild(container);
     },
     onFilter: function (operator, term, staticValue, excludeStatic) {
@@ -2018,7 +2018,7 @@ module.exports.FilterPanel = react.createClass({
         }
 
         var buttonClass = this.props.pivotTableComp.pgrid.config.theme.getButtonClasses().orbButton;
-        var pivotStyle = window.getComputedStyle(this.props.pivotTableComp.getDOMNode(), null);
+        var pivotStyle = window.getComputedStyle(ReactDOM.findDOMNode(this.props.pivotTableComp), null);
         var style = {
             fontFamily: pivotStyle.getPropertyValue('font-family'),
             fontSize: pivotStyle.getPropertyValue('font-size')
@@ -2513,8 +2513,8 @@ function FilterManager(reactComp, initialFilterObject) {
 
 module.exports.Dropdown = react.createClass({
     openOrClose: function (e) {
-        var valueNode = this.refs.valueElement.getDOMNode();
-        var valuesListNode = this.refs.valuesList.getDOMNode();
+        var valueNode = ReactDOM.findDOMNode(this.refs.valueElement);
+        var valuesListNode = ReactDOM.findDOMNode(this.refs.valuesList);
         if (e.target === valueNode && valuesListNode.style.display === 'none') {
             valuesListNode.style.display = 'block';
         } else {
@@ -2522,12 +2522,12 @@ module.exports.Dropdown = react.createClass({
         }
     },
     onMouseEnter: function () {
-        var valueNode = this.refs.valueElement.getDOMNode();
+        var valueNode = ReactDOM.findDOMNode(this.refs.valueElement);
         valueNode.className = "orb-tgl-btn-down";
         valueNode.style.backgroundPosition = 'right center';
     },
     onMouseLeave: function () {
-        this.refs.valueElement.getDOMNode().className = "";
+        ReactDOM.findDOMNode(this.refs.valueElement).className = "";
     },
     componentDidMount: function () {
         document.addEventListener('click', this.openOrClose);
@@ -2536,7 +2536,7 @@ module.exports.Dropdown = react.createClass({
         document.removeEventListener('click', this.openOrClose);
     },
     selectValue: function (e) {
-        var listNode = this.refs.valuesList.getDOMNode();
+        var listNode = ReactDOM.findDOMNode(this.refs.valuesList);
         var target = e.target;
         var isli = false;
         while (!isli && target != null) {
@@ -2549,7 +2549,7 @@ module.exports.Dropdown = react.createClass({
 
         if (isli) {
             var value = target.textContent;
-            var valueElement = this.refs.valueElement.getDOMNode();
+            var valueElement = ReactDOM.findDOMNode(this.refs.valueElement);
             if (valueElement.textContent != value) {
                 valueElement.textContent = value;
                 if (this.props.onValueChanged) {
@@ -2678,7 +2678,7 @@ var Dialog = module.exports.Dialog = react.createClass({
 
             return {
                 show: function (props) {
-                    React.render(dialogFactory(props), overlay);
+                    ReactDOM.render(dialogFactory(props), overlay);
                 }
             };
         }
@@ -2711,7 +2711,7 @@ var Dialog = module.exports.Dialog = react.createClass({
     close: function (e) {
         if (e.target == this.overlayElement || e.target.className === 'button-close') {
             this.overlayElement.removeEventListener('click', this.close);
-            React.unmountComponentAtNode(this.overlayElement);
+            ReactDOM.unmountComponentAtNode(this.overlayElement);
             this.setOverlayClass(false);
         }
     },

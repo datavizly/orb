@@ -3,6 +3,7 @@
 /* global module, require, React */
 
 'use strict';
+import ReactDOM from 'react-dom';
 
 function createOverlay() {
   var overlayElement = document.createElement('div');
@@ -19,7 +20,7 @@ var Dialog = module.exports.Dialog = react.createClass({
 
         return {
           show: function(props) {
-            React.render(dialogFactory(props), overlay);
+              ReactDOM.render(dialogFactory(props), overlay);
           }
         };
     }

@@ -24,8 +24,6 @@ var OrbReactComps = require('./react/orb.react.compiled');
  */
 module.exports = function (config) {
 
-    console.log('pgridwidget start');
-
     var self = this;
     var renderElement;
     var pivotComponent;
@@ -108,7 +106,7 @@ module.exports = function (config) {
     this.refreshData = function (data) {
         self.pgrid.refreshData(data);
         buildUi();
-        pivotComponent.setProps({});
+        pivotComponent.setState({});
     };
 
     this.applyFilter = function (fieldname, operator, term, staticValue, excludeStatic) {
@@ -164,7 +162,6 @@ module.exports = function (config) {
     this.render = function (element) {
         renderElement = element;
         if (renderElement) {
-            console.log('pgridwidget render');
             var pivotTableFactory = React.createFactory(OrbReactComps.PivotTable);
             var pivottable = pivotTableFactory({
                 pgridwidget: self
