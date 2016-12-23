@@ -1933,7 +1933,7 @@ module.exports.FilterPanel = react.createClass({
     },
     destroy: function () {
         var container = ReactDOM.findDOMNode(this).parentNode;
-        ReactDOM.unmountComponentAtNode(container);
+        React.unmountComponentAtNode(container);
         container.parentNode.removeChild(container);
     },
     onFilter: function (operator, term, staticValue, excludeStatic) {
@@ -2711,7 +2711,7 @@ var Dialog = module.exports.Dialog = react.createClass({
     close: function (e) {
         if (e.target == this.overlayElement || e.target.className === 'button-close') {
             this.overlayElement.removeEventListener('click', this.close);
-            ReactDOM.unmountComponentAtNode(this.overlayElement);
+            React.unmountComponentAtNode(this.overlayElement);
             this.setOverlayClass(false);
         }
     },
