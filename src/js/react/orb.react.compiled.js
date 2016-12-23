@@ -762,7 +762,6 @@ module.exports.PivotCell = react.createClass({
     },
     _latestVisibleState: false,
     render: function () {
-        console.log('PivotCell');
         var self = this;
         var cell = this.props.cell;
         var divcontent = [];
