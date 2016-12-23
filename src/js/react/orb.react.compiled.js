@@ -1670,7 +1670,10 @@ module.exports.PivotTableRowHeaders = react.createClass({
                 onWheel: this.props.pivotTableComp.onWheel
             },
             React.createElement("table", {
-                    className: "inner-table"
+                    className: "inner-table",
+                    style: {
+                        minWidth: pgridwidget.pgrid.rows.fields.length * 100 + 'px'
+                    }
                 },
                 React.createElement("colgroup", {
                     ref: "colgroup"
