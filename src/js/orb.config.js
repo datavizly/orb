@@ -85,6 +85,8 @@ function createfield(rootconfig, axetype, fieldconfig, defaultfieldconfig) {
 
         label: getpropertyvalue('label', merged.configs, ''),
 
+        formatter: getpropertyvalue('formatter', merged.configs, ''),
+
         sort: {
             order: getpropertyvalue('order', merged.sorts, null),
             customfunc: getpropertyvalue('customfunc', merged.sorts, null)
@@ -141,6 +143,8 @@ var Field = module.exports.field = function (options, createSubOptions) {
     this.caption = options.caption || this.name;
 
     this.label = options.label || options.caption;
+
+    this.formatter = options.formatter;
 
     // rows & columns settings
     this.sort = new SortConfig(options.sort);

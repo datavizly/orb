@@ -1,7 +1,9 @@
+var HtmlNumberInput = require('./HtmlNumberInput');
 var React = require("react");
 var ReactDOM = require("react-dom");
 var orb = require('../src/js/orb.js');
 var GetData = require('./data');
+
 
 function refreshData() {
     pgridwidget.refreshData(window.demo.data);
@@ -23,17 +25,72 @@ let fields = [
     {name: '2', caption: 'accountNickname', label: '客户账号'},
     {
         name: '3', caption: 'consumption', label: '消耗值',
+        formatter: function (value, data, cell) {
+            return React.createElement(HtmlNumberInput, {
+                value: value,
+                onChange: function (_value) {
+                    console.log(_value)
+                }
+            })
+        },
         dataSettings: {
-            aggregateFunc: 'avg',
+            aggregateFunc: 'sum',
             formatFunc: function (value) {
-                return Number(value).toFixed(0);
+                return parseInt(value) ? parseInt(value) : '-'
             }
         }
     },
-    {name: '4', caption: 'plan', label: '计划消耗值'},
-    {name: '5', caption: 'materialCount', label: '素材数'},
-    {name: '6', caption: 'materialPlan', label: '计划素材数'},
-    {name: '7', caption: 'date', label: '消耗值'},
+    {
+        name: '4', caption: 'plan', label: '计划消耗值',
+        formatter: function (value, data) {
+            return React.createElement(HtmlNumberInput, {
+                value: value,
+                onChange: function (_value) {
+                    console.log(_value)
+                }
+            })
+        },
+        dataSettings: {
+            aggregateFunc: 'sum',
+            formatFunc: function (value) {
+                return parseInt(value) ? parseInt(value) : '-'
+            }
+        }
+    },
+    {
+        name: '5', caption: 'materialCount', label: '素材数', formatter: function (value, data) {
+        return React.createElement(HtmlNumberInput, {
+            value: value,
+            onChange: function (_value) {
+                console.log(_value)
+            }
+        })
+    },
+        dataSettings: {
+            aggregateFunc: 'sum',
+            formatFunc: function (value) {
+                return parseInt(value) ? parseInt(value) : '-'
+            }
+        }
+    },
+    {
+        name: '6', caption: 'materialPlan', label: '计划素材数',
+        formatter: function (value, data) {
+            return React.createElement(HtmlNumberInput, {
+                value: value,
+                onChange: function (_value) {
+                    console.log(_value)
+                }
+            })
+        },
+        dataSettings: {
+            aggregateFunc: 'sum',
+            formatFunc: function (value) {
+                return parseInt(value) ? parseInt(value) : '-'
+            }
+        }
+    },
+    {name: '7', caption: 'date', label: '日期'},
 ];
 var config = {
     // dataSource: window.demo.data,
@@ -150,4 +207,11 @@ var elem = document.getElementById('rr')
 window.onload = function () {
     var pgridwidget = new orb.pgridwidget(config);
     pgridwidget.render(elem);
+    ReactDOM.render(React.createElement(HtmlNumberInput, {
+        data: 123,
+        onChange: function (value, target) {
+            console.log(value);
+        }
+    }), document.getElementById('edit2'));
+
 };

@@ -762,12 +762,15 @@ module.exports.PivotCell = react.createClass({
     },
     _latestVisibleState: false,
     render: function () {
+        console.log('PivotCell');
         var self = this;
         var cell = this.props.cell;
         var divcontent = [];
         var value;
         var cellClick;
         var headerPushed = false;
+        var hasFormatter = false;
+        var data = '';
 
         this._latestVisibleState = cell.visible();
 
@@ -807,6 +810,19 @@ module.exports.PivotCell = react.createClass({
                 break;
             case 'cell-template-datavalue':
                 value = (cell.datafield && cell.datafield.formatFunc) ? cell.datafield.formatFunc()(cell.value) : cell.value;
+
+                if (cell.datafield && cell.datafield.formatter && (cell.rowType == uiheaders.HeaderType.INNER)) {
+                    hasFormatter = true;
+                    var colIndexes = cell.columnDimension.getRowIndexes();
+                    data = cell.rowDimension.getRowIndexes().filter(function (index) {
+                        return colIndexes.indexOf(index) >= 0;
+                    }).map(function (index) {
+                        return self.props.pivotTableComp.pgridwidget.pgrid.filteredDataSource[index];
+                    });
+                } else {
+
+                }
+
                 cellClick = function () {
                     self.props.pivotTableComp.pgridwidget.drilldown(cell, self.props.pivotTableComp.id);
                 };
@@ -827,14 +843,15 @@ module.exports.PivotCell = react.createClass({
                     }
             }
             divcontent.push(React.createElement("div", {
-                key: "cell-value",
-                ref: "cellContent",
-                className: headerClassName
-            }, React.createElement("div", {
-                dangerouslySetInnerHTML: {
-                    __html: value || '&#160;'
-                }
-            })));
+                    key: "cell-value",
+                    ref: "cellContent",
+                    className: headerClassName
+                },
+                hasFormatter ? cell.datafield.formatter(value, data, cell) : React.createElement("div", {
+                    dangerouslySetInnerHTML: {
+                        __html: value || '&#160;'
+                    }
+                })));
         }
 
         return React.createElement("td", {
