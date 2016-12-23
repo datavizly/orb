@@ -347,7 +347,7 @@ module.exports.PivotTable = react.createClass({
                                 })
                             )
                         ) : null,
-                        config.upperButtons && config.upperButtons.visible ? React.createElement("tr", {
+                        config.columnButtons && config.columnButtons.visible ? React.createElement("tr", {
                                 ref: "columnbuttonsRow"
                             },
                             React.createElement("td", null),
@@ -799,11 +799,11 @@ module.exports.PivotCell = react.createClass({
                                 })))
                         )));
                 } else {
-                    value = (cell.value || '&#160;') + (cell.type === uiheaders.HeaderType.SUB_TOTAL ? ' Total' : '');
+                    value = (cell.value || '&#160;') + (cell.type === uiheaders.HeaderType.SUB_TOTAL ? ' 总共' : '');
                 }
                 break;
             case 'cell-template-dataheader':
-                value = cell.value.caption;
+                value = cell.value.label || cell.value.caption;
                 break;
             case 'cell-template-datavalue':
                 value = (cell.datafield && cell.datafield.formatFunc) ? cell.datafield.formatFunc()(cell.value) : cell.value;
@@ -1420,7 +1420,7 @@ module.exports.PivotButton = react.createClass({
                     React.createElement("tr", null,
                         React.createElement("td", {
                             className: "caption"
-                        }, self.props.field.caption, fieldAggFunc),
+                        }, self.props.field.label || self.props.field.caption, fieldAggFunc),
                         React.createElement("td", null, React.createElement("div", {
                             className: 'sort-indicator ' + sortDirectionClass
                         })),
@@ -2766,7 +2766,7 @@ module.exports.Toolbar = react.createClass({
     componentDidUpdate: function () {
         for (var i = 0; i < this._toInit.length; i++) {
             var btn = this._toInit[i];
-            btn.init(this.props.pivotTableComp, this.refs[btn.ref].getDOMNode());
+            btn.init(this.props.pivotTableComp, ReactDOM.findDOMNode(this.refs[btn.ref]));
         }
     },
     createCallback: function (action) {

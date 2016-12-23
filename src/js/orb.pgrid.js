@@ -20,7 +20,7 @@ var utils = require('./orb.utils');
  * @memberOf orb
  * @param  {object} config - configuration object
  */
-module.exports = function(config) {
+module.exports = function (config) {
 
     var defaultfield = {
         name: '#undefined#'
@@ -28,7 +28,7 @@ module.exports = function(config) {
 
     var self = this;
     var _iCache;
-    
+
 
     this.config = new configuration(config);
     this.filters = self.config.getPreFilters();
@@ -39,7 +39,7 @@ module.exports = function(config) {
     this.dataMatrix = {};
 
     function refresh(refreshFilters) {
-        if(refreshFilters !== false) {
+        if (refreshFilters !== false) {
             refreshFilteredDataSource();
         }
         self.rows.update();
@@ -49,22 +49,22 @@ module.exports = function(config) {
 
     function refreshFilteredDataSource() {
         var filterFields = utils.ownProperties(self.filters);
-        if(filterFields.length > 0) {
+        if (filterFields.length > 0) {
             self.filteredDataSource = [];
 
-            for(var i = 0; i < self.config.dataSource.length; i++) {
+            for (var i = 0; i < self.config.dataSource.length; i++) {
                 var row = self.config.dataSource[i];
                 var exclude = false;
-                for(var fi = 0; fi < filterFields.length; fi++) {
+                for (var fi = 0; fi < filterFields.length; fi++) {
                     var fieldname = filterFields[fi];
                     var fieldFilter = self.filters[fieldname];
 
-                    if(fieldFilter && !fieldFilter.test(row[fieldname])) {
+                    if (fieldFilter && !fieldFilter.test(row[fieldname])) {
                         exclude = true;
                         break;
                     }
                 }
-                if(!exclude) {
+                if (!exclude) {
                     self.filteredDataSource.push(row);
                 }
             }
@@ -73,7 +73,7 @@ module.exports = function(config) {
         }
     }
 
-    this.moveField = function(fieldname, oldaxetype, newaxetype, position) {
+    this.moveField = function (fieldname, oldaxetype, newaxetype, position) {
         if (self.config.moveField(fieldname, oldaxetype, newaxetype, position)) {
             refresh(false);
             return true;
@@ -81,47 +81,49 @@ module.exports = function(config) {
         return false;
     };
 
-    this.applyFilter = function(fieldname, operator, term, staticValue, excludeStatic) {
+    this.applyFilter = function (fieldname, operator, term, staticValue, excludeStatic) {
         self.filters[fieldname] = new filtering.expressionFilter(operator, term, staticValue, excludeStatic);
         refresh();
     };
 
-    this.refreshData = function(data) {
+    this.refreshData = function (data) {
         self.config.dataSource = data;
         refresh();
     };
 
-    this.getFieldValues = function(field, filterFunc) {
+    this.getFieldValues = function (field, filterFunc) {
         var values1 = [];
         var values = [];
         var containsBlank = false;
-        for(var i = 0; i < self.config.dataSource.length; i++) {
+        for (var i = 0; i < self.config.dataSource.length; i++) {
             var row = self.config.dataSource[i];
             var val = row[field];
-            if(filterFunc !== undefined) {
-                if(filterFunc === true || (typeof filterFunc === 'function' && filterFunc(val))) {
+            if (filterFunc !== undefined) {
+                if (filterFunc === true || (typeof filterFunc === 'function' && filterFunc(val))) {
                     values1.push(val);
                 }
             } else {
-                if(val) {
+                if (val) {
                     values1.push(val);
                 } else {
                     containsBlank = true;
                 }
             }
         }
-        if(values1.length > 1) {
-            if(utils.isNumber(values1[0]) || utils.isDate(values1[0])) {
-                values1.sort(function(a, b) { return a ? (b ? a - b : 1) : (b ? -1 : 0); });
+        if (values1.length > 1) {
+            if (utils.isNumber(values1[0]) || utils.isDate(values1[0])) {
+                values1.sort(function (a, b) {
+                    return a ? (b ? a - b : 1) : (b ? -1 : 0);
+                });
             } else {
                 values1.sort();
             }
 
-            for(var vi = 0; vi < values1.length; vi++) {
-                if(vi === 0 || values1[vi] !== values[values.length - 1]) {
+            for (var vi = 0; vi < values1.length; vi++) {
+                if (vi === 0 || values1[vi] !== values[values.length - 1]) {
                     values.push(values1[vi]);
                 }
-            }            
+            }
         } else {
             values = values1;
         }
@@ -129,27 +131,27 @@ module.exports = function(config) {
         return values;
     };
 
-    this.getFieldFilter = function(field) {
+    this.getFieldFilter = function (field) {
         return self.filters[field];
     };
 
-    this.isFieldFiltered = function(field) {
+    this.isFieldFiltered = function (field) {
         var filter = self.getFieldFilter(field);
         return filter != null && !filter.isAlwaysTrue();
     };
 
-    this.getData = function(field, rowdim, coldim, aggregateFunc) {
+    this.getData = function (field, rowdim, coldim, aggregateFunc) {
         var value;
         if (rowdim && coldim) {
 
             var datafieldName = field || (self.config.dataFields[0] || defaultfield).name;
             var datafield = self.config.getDataField(datafieldName);
-            
-            if(!datafield || (aggregateFunc && datafield.aggregateFunc != aggregateFunc)) {
+
+            if (!datafield || (aggregateFunc && datafield.aggregateFunc != aggregateFunc)) {
                 value = self.calcAggregation(
-                    rowdim.isRoot ? null : rowdim.getRowIndexes().slice(0), 
-                    coldim.isRoot ? null : coldim.getRowIndexes().slice(0), 
-                    [datafieldName], 
+                    rowdim.isRoot ? null : rowdim.getRowIndexes().slice(0),
+                    coldim.isRoot ? null : coldim.getRowIndexes().slice(0),
+                    [datafieldName],
                     aggregateFunc)[datafieldName];
             } else {
                 if (self.dataMatrix[rowdim.id] && self.dataMatrix[rowdim.id][coldim.id]) {
@@ -163,7 +165,7 @@ module.exports = function(config) {
         return value === undefined ? null : value;
     };
 
-    this.calcAggregation = function(rowIndexes, colIndexes, fieldNames, aggregateFunc) {
+    this.calcAggregation = function (rowIndexes, colIndexes, fieldNames, aggregateFunc) {
         return computeValue(rowIndexes, colIndexes, rowIndexes, fieldNames, aggregateFunc);
     };
 
@@ -202,13 +204,13 @@ module.exports = function(config) {
             var datafield;
             var datafields = [];
 
-            if(fieldNames) {
+            if (fieldNames) {
                 for (var fieldnameIndex = 0; fieldnameIndex < fieldNames.length; fieldnameIndex++) {
                     datafield = self.config.getDataField(fieldNames[fieldnameIndex]);
-                    if(!aggregateFunc) {
-                        if(!datafield) {
+                    if (!aggregateFunc) {
+                        if (!datafield) {
                             datafield = self.config.getField(fieldNames[fieldnameIndex]);
-                            if(datafield) {
+                            if (datafield) {
                                 aggregateFunc = datafield.dataSettings ? datafield.dataSettings.aggregateFunc() : datafield.aggregateFunc();
                             }
                         } else {
@@ -216,23 +218,23 @@ module.exports = function(config) {
                         }
                     }
 
-                    if (datafield &&  aggregateFunc) {
-                        datafields.push({ field: datafield, aggregateFunc: aggregateFunc});
+                    if (datafield && aggregateFunc) {
+                        datafields.push({field: datafield, aggregateFunc: aggregateFunc});
                     }
-                }                
+                }
             } else {
                 for (var datafieldIndex = 0; datafieldIndex < self.config.dataFieldsCount; datafieldIndex++) {
                     datafield = self.config.dataFields[datafieldIndex] || defaultfield;
                     if (aggregateFunc || datafield.aggregateFunc) {
-                        datafields.push({ field: datafield, aggregateFunc: aggregateFunc || datafield.aggregateFunc()});
+                        datafields.push({field: datafield, aggregateFunc: aggregateFunc || datafield.aggregateFunc()});
                     }
                 }
             }
 
-            for(var dfi = 0; dfi < datafields.length; dfi++) {
+            for (var dfi = 0; dfi < datafields.length; dfi++) {
                 datafield = datafields[dfi];
                 // no data
-                if(emptyIntersection) {
+                if (emptyIntersection) {
                     res[datafield.field.name] = null;
                 } else {
                     res[datafield.field.name] = datafield.aggregateFunc(datafield.field.name, intersection || 'all', self.filteredDataSource, origRowIndexes || rowIndexes, colIndexes);

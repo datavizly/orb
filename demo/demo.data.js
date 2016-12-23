@@ -1,5 +1,7 @@
 // Ensure orb.demo namespace is created
 //orb.utils.ns('orb.demo');
+// Ensure orb.demo namespace is created
+//orb.utils.ns('orb.demo');
 
 (function() {
 

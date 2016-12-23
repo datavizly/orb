@@ -150,7 +150,7 @@ module.exports.header = function(axetype, headerType, dim, parent, datafieldscou
 
     switch (headerType) {
         case HeaderType.GRAND_TOTAL:
-            value = 'Grand Total';
+            value = '总共';
             hspan = isRowsAxe ? dim.depth - 1 || 1 : datafieldscount;
             vspan = isRowsAxe ? datafieldscount : dim.depth - 1 || 1;
             break;

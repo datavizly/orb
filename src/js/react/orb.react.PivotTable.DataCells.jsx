@@ -10,7 +10,7 @@ module.exports.PivotTableDataCells = react.createClass({
     var PivotRow = comps.PivotRow;
 
     var pgridwidget = this.props.pivotTableComp.pgridwidget;
-    var layoutInfos = { 
+    var layoutInfos = {
       lastLeftMostCellVSpan: 0,
       topMostCells: {}
     };
