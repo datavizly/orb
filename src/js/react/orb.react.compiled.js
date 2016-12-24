@@ -299,6 +299,8 @@ module.exports.PivotTable = react.createClass({
             tblStyle.height = config.height;
         }
 
+        this.pgridwidget.pivotComponent = this;
+
         return (
             React.createElement("div", {
                     className: classes.container,
