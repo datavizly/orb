@@ -22,7 +22,22 @@ function exportToExcel(anchor) {
 let fields = [
     {name: '0', caption: '_id'},
     {name: '1', caption: 'account', label: '部门成员'},
-    {name: '2', caption: 'accountNickname', label: '客户账号'},
+    {
+        name: '2', caption: 'customerAccountId', label: '客户账号',
+        formatter: function (value, data, cell) {
+            return React.createElement('div', {
+                style: {
+                    cursor: 'pointer'
+                },
+                dangerouslySetInnerHTML: {
+                    __html: data[8] || data[9] || '&#160;'
+                },
+                onChange: function (_value) {
+                    console.log(_value)
+                }
+            })
+        }
+    },
     {
         name: '3', caption: 'consumption', label: '消耗值',
         formatter: function (value, data, cell) {
@@ -91,6 +106,8 @@ let fields = [
         }
     },
     {name: '7', caption: 'date', label: '日期'},
+    {name: '8', caption: 'accountNickname', label: '客户账号'},
+    {name: '9', caption: 'accountUsername', label: '客户账号'}
 ];
 var config = {
     // dataSource: window.demo.data,
@@ -142,7 +159,7 @@ var config = {
     //         }
     //     }
     // ],
-    rows: ['account', 'accountNickname'],//, 'Category' ],
+    rows: ['account', 'customerAccountId'],//, 'Category' ],
     columns: ['date'],
     data: ['consumption', 'plan', 'materialCount', 'materialPlan']
 
