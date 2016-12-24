@@ -102,13 +102,13 @@ var config = {
     theme: 'gray',
 
     toolbar: {
-        visible: false
+        visible: true
     },
     upperButtons: {
-        visible: false
+        visible: true
     },
     columnButtons: {
-        visible: false
+        visible: true
     },
     scrollBar: {
         visible: true
