@@ -778,6 +778,24 @@ module.exports.PivotCell = react.createClass({
             case 'cell-template-column-header':
                 var isWrapper = cell.type === uiheaders.HeaderType.WRAPPER && cell.dim.field.subTotal.visible && cell.dim.field.subTotal.collapsible;
                 var isSubtotal = cell.type === uiheaders.HeaderType.SUB_TOTAL && !cell.expanded;
+
+                var colIndexes = cell.dim.getRowIndexes();
+                data = cell.dim.getRowIndexes().filter(function (index) {
+                    return colIndexes.indexOf(index) >= 0;
+                }).map(function (index) {
+                    return self.props.pivotTableComp.pgridwidget.pgrid.filteredDataSource[index];
+                });
+
+                if (data && data.length > 0) {
+                    data = data[0];
+                }
+
+                if (cell.dim && cell.dim.field && cell.dim.field.formatter) {
+                    hasFormatter = true;
+                } else {
+
+                }
+
                 if (isWrapper || isSubtotal) {
                     headerPushed = true;
 
@@ -808,16 +826,15 @@ module.exports.PivotCell = react.createClass({
                 value = cell.value.label || cell.value.caption;
                 break;
             case 'cell-template-datavalue':
-                value = (cell.datafield && cell.datafield.formatFunc) ? cell.datafield.formatFunc()(cell.value) : cell.value;
-
+                var colIndexes = cell.columnDimension.getRowIndexes();
+                data = cell.rowDimension.getRowIndexes().filter(function (index) {
+                    return colIndexes.indexOf(index) >= 0;
+                }).map(function (index) {
+                    return self.props.pivotTableComp.pgridwidget.pgrid.filteredDataSource[index];
+                });
+                value = (cell.datafield && cell.datafield.formatFunc) ? cell.datafield.formatFunc()(cell.value, data) : cell.value;
                 if (cell.datafield && cell.datafield.formatter && (cell.rowType == uiheaders.HeaderType.INNER)) {
                     hasFormatter = true;
-                    var colIndexes = cell.columnDimension.getRowIndexes();
-                    data = cell.rowDimension.getRowIndexes().filter(function (index) {
-                        return colIndexes.indexOf(index) >= 0;
-                    }).map(function (index) {
-                        return self.props.pivotTableComp.pgridwidget.pgrid.filteredDataSource[index];
-                    });
                 } else {
 
                 }
@@ -846,7 +863,7 @@ module.exports.PivotCell = react.createClass({
                     ref: "cellContent",
                     className: headerClassName
                 },
-                hasFormatter ? cell.datafield.formatter(value, data, cell) : React.createElement("div", {
+                hasFormatter ? (cell.datafield || cell.dim.field).formatter(value, data, cell) : React.createElement("div", {
                     dangerouslySetInnerHTML: {
                         __html: value || '&#160;'
                     }
