@@ -91,6 +91,10 @@ module.exports = function (config) {
         }
     };
 
+    this.pivotComponent = function (_pivotComponent) {
+        pivotComponent = _pivotComponent;
+    };
+
     this.sort = function (axetype, field) {
         if (axetype === axe.Type.ROWS) {
             self.pgrid.rows.sort(field);
