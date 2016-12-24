@@ -2,6 +2,7 @@ var HtmlNumberInput = require('./HtmlNumberInput');
 var React = require("react");
 var ReactDOM = require("react-dom");
 var orb = require('../src/js/orb.js');
+var OrbReactComps = require('../src/js/react/orb.react.compiled');
 var GetData = require('./data');
 
 
@@ -141,94 +142,24 @@ var config = {
         collapsible: true
     },
     fields: fields,
-    // fields: [
-    //     {name: '0', caption: 'Entity'},
-    //     {name: '1', caption: 'Product'},
-    //     {name: '2', caption: 'Manufacturer', sort: {order: 'asc'}},
-    //     {name: '3', caption: 'Class'},
-    //     {name: '4', caption: 'Category', sort: {order: 'desc'}},
-    //     {name: '5', caption: 'Quantity'},
-    //     {
-    //         name: '6',
-    //         caption: 'Amount',
-    //         dataSettings: {
-    //             aggregateFunc: 'avg',
-    //             formatFunc: function (value) {
-    //                 return Number(value).toFixed(0);
-    //             }
-    //         }
-    //     }
-    // ],
     rows: ['account', 'customerAccountId'],//, 'Category' ],
     columns: ['date'],
     data: ['consumption', 'plan', 'materialCount', 'materialPlan']
-
-    // grandTotal: {
-    //     rowsvisible: true,
-    //     columnsvisible: false
-    // },
-    // subTotal: {
-    //     visible: true,
-    //     collapsed: true,
-    //     collapsible: true
-    // },
-    //
-    // rowSettings: {
-    //     subTotal: {
-    //         visible: true,
-    //         collapsed: true,
-    //         collapsible: true
-    //     }
-    // },
-    // columnSettings: {
-    //     subTotal: {
-    //         visible: true,
-    //         collapsed: true,
-    //         collapsible: true
-    //     }
-    // },
-    // fields: [
-    //     {name: '0', caption: 'Entity'},
-    //     {name: '1', caption: 'Product'},
-    //     {name: '2', caption: 'Manufacturer', sort: {order: 'asc'}},
-    //     {name: '3', caption: 'Class'},
-    //     {name: '4', caption: 'Category', sort: {order: 'desc'}},
-    //     {name: '5', caption: 'Quantity'},
-    //     {
-    //         name: '6',
-    //         caption: 'Amount',
-    //         dataSettings: {
-    //             aggregateFunc: 'avg',
-    //             formatFunc: function (value) {
-    //                 return Number(value).toFixed(0);
-    //             }
-    //         }
-    //     }
-    // ],
-    // rows: ['Manufacturer', 'Category'],
-    // columns: ['Class'],
-    // data: ['Quantity', 'Amount'],
-    // preFilters: {
-    //     'Manufacturer': {'Matches': /n/},
-    //     'Amount': {'>': 40}
-    // },
-//     width: 1110,
-//     height: 645
 };
 
 var elem = document.getElementById('rr')
 
-// var pgridwidget = new orb.pgridwidget(config);
-// pgridwidget.render(elem);
-
 window.onload = function () {
+    console.log(config)
     var pgridwidget = new orb.pgridwidget(config);
-    pgridwidget.render(elem);
-    ReactDOM.render(React.createElement(HtmlNumberInput, {
-        data: 123,
-        onChange: function (value, target) {
-            console.log(value);
-        }
-    }), document.getElementById('edit2'));
+    // pgridwidget.render(elem);
+
+    // let pgridwidget = new orb.pgridwidget(config);
+    // var pivotTableFactory = React.createFactory(OrbReactComps.PivotTable);
+    var pivotTable = React.createElement(OrbReactComps.PivotTable, {
+        pgridwidget: pgridwidget
+    });
+
+    ReactDOM.render(pivotTable, elem);
 
 };
