@@ -772,6 +772,7 @@ module.exports.PivotCell = react.createClass({
         var headerPushed = false;
         var hasFormatter = false;
         var data = '';
+        var datas = '';
 
         this._latestVisibleState = cell.visible();
 
@@ -789,6 +790,7 @@ module.exports.PivotCell = react.createClass({
                 });
 
                 if (data && data.length > 0) {
+                    datas = data;
                     data = data[0];
                 }
 
@@ -865,7 +867,7 @@ module.exports.PivotCell = react.createClass({
                     ref: "cellContent",
                     className: headerClassName
                 },
-                hasFormatter ? (cell.datafield || cell.dim.field).formatter(value, data, cell) : React.createElement("div", {
+                hasFormatter ? (cell.datafield || cell.dim.field).formatter(value, data, cell, datas) : React.createElement("div", {
                     dangerouslySetInnerHTML: {
                         __html: value || '&#160;'
                     }
