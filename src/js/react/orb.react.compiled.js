@@ -821,7 +821,7 @@ module.exports.PivotCell = react.createClass({
                                 })),
                                 React.createElement("td", {
                                     className: "hdr-val"
-                                }, React.createElement("div", {
+                                }, hasFormatter ? (cell.datafield || cell.dim.field).formatter(cell.value, data, cell, datas) : React.createElement("div", {
                                     dangerouslySetInnerHTML: {
                                         __html: cell.value || '&#160;'
                                     }
