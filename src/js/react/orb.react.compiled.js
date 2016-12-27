@@ -895,7 +895,7 @@ module.exports.PivotCell = react.createClass({
                 style: cellStyle,
                 onDoubleClick: cellClick,
                 onClick: function () {
-                    config.onClick(cell.value, data, cell);
+                    config.onClick(cell.value, data, cell, datas);
                 },
                 colSpan: cell.hspan(),
                 rowSpan: cell.vspan()
