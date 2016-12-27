@@ -117,6 +117,17 @@ var config = {
     dataHeadersLocation: 'columns',
     // width: 1500,
     // height: 611,
+    onClick: function (value, data, cell) {
+        if (cell.rowDimension) {
+            pgridwidget.setSelectedtRowDim(cell.rowDimension.value);
+            pgridwidget.refreshData(GetData(fields));
+        }
+        if (cell.dim) {
+            pgridwidget.setSelectedtRowDim(cell.dim.value);
+            pgridwidget.refreshData(GetData(fields));
+        }
+
+    },
     theme: 'gray',
 
     toolbar: {
@@ -149,9 +160,11 @@ var config = {
 
 var elem = document.getElementById('rr')
 
+var pgridwidget = new orb.pgridwidget(config);
+
 window.onload = function () {
     console.log(config)
-    var pgridwidget = new orb.pgridwidget(config);
+
     // pgridwidget.render(elem);
 
     // let pgridwidget = new orb.pgridwidget(config);

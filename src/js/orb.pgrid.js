@@ -31,6 +31,7 @@ module.exports = function (config) {
 
 
     this.config = new configuration(config);
+    this.onClick = self.config.onClick;
     this.filters = self.config.getPreFilters();
     this.filteredDataSource = self.config.dataSource;
 

@@ -213,6 +213,8 @@ module.exports.config = function (config) {
     this.columnButtons = config.columnButtons;
     this.theme = themeManager;
 
+    this.onClick = config.onClick;
+
     themeManager.current(config.theme);
 
     this.rowSettings = new Field(config.rowSettings, false);

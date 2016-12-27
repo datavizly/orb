@@ -769,6 +769,9 @@ module.exports.PivotCell = react.createClass({
     },
     _latestVisibleState: false,
     render: function () {
+        var config = this.props.pivotTableComp.pgridwidget.pgrid.config;
+        var pgridwidget = this.props.pivotTableComp.pgridwidget;
+        // console.log(config);
         var self = this;
         var cell = this.props.cell;
         var divcontent = [];
@@ -778,6 +781,14 @@ module.exports.PivotCell = react.createClass({
         var hasFormatter = false;
         var data = '';
         var datas = '';
+
+        var cellStyle = {};
+        if (pgridwidget.selectedRowDim && ( (cell.rowDimension && cell.rowDimension.value == pgridwidget.selectedRowDim) ||
+            cell.dim && cell.dim.value == pgridwidget.selectedRowDim)
+        ) {
+            cellStyle = {background: 'rgb(255, 250, 236)'};
+        }
+
 
         this._latestVisibleState = cell.visible();
 
@@ -881,7 +892,11 @@ module.exports.PivotCell = react.createClass({
 
         return React.createElement("td", {
                 className: getClassname(this.props),
+                style: cellStyle,
                 onDoubleClick: cellClick,
+                onClick: function () {
+                    config.onClick(cell.value, data, cell);
+                },
                 colSpan: cell.hspan(),
                 rowSpan: cell.vspan()
             },
