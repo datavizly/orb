@@ -2022,7 +2022,7 @@ module.exports.FilterPanel = react.createClass({
         this.destroy();
     },
     onMouseWheel: function (e) {
-        var valuesTable = this.refs.valuesTable.getDOMNode();
+        var valuesTable = ReactDOM.getDOMNode(this.refs.valuesTable);
         var target = e.target;
         while (target != null) {
             if (target == valuesTable) {
