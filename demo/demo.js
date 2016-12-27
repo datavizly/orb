@@ -117,7 +117,7 @@ var config = {
     dataHeadersLocation: 'columns',
     // width: 1500,
     // height: 611,
-    onClick: function (value, data, cell) {
+    onClick: function (value, data, cell,datas) {
         if (cell.rowDimension) {
             pgridwidget.setSelectedtRowDim(cell.rowDimension.value);
             pgridwidget.refreshData(GetData(fields));

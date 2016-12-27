@@ -846,6 +846,13 @@ module.exports.PivotCell = react.createClass({
                 value = cell.value.label || cell.value.caption;
                 break;
             case 'cell-template-datavalue':
+                var _colIndexes = cell.rowDimension.getRowIndexes();
+                datas = cell.rowDimension.getRowIndexes().filter(function (index) {
+                    return _colIndexes.indexOf(index) >= 0;
+                }).map(function (index) {
+                    return self.props.pivotTableComp.pgridwidget.pgrid.filteredDataSource[index];
+                });
+
                 var colIndexes = cell.columnDimension.getRowIndexes();
                 data = cell.rowDimension.getRowIndexes().filter(function (index) {
                     return colIndexes.indexOf(index) >= 0;
