@@ -233,13 +233,18 @@ module.exports.PivotTable = react.createClass({
         nodes.colHeadersTable.node.style.width = dataCellsTableMaxWidth + 'px';
         nodes.rowHeadersTable.node.style.width = rowHeadersTableWidth + 'px';
 
-        var dataCellsContainerWidth = Math.min(
-            dataCellsTableMaxWidth + 1,
-            nodes.pivotContainer.size.width - rowHeadersTableWidth - nodes.verticalScrollBar.size.width);
+        var dataCellsContainerWidth = nodes.pivotContainer.size.width - rowHeadersTableWidth - nodes.verticalScrollBar.size.width;
+        // var dataCellsContainerWidth = Math.min(
+        //     dataCellsTableMaxWidth + 1,
+        //     nodes.pivotContainer.size.width - rowHeadersTableWidth - nodes.verticalScrollBar.size.width);
 
         // Adjust data cells container width
         nodes.dataCellsContainer.node.style.width = dataCellsContainerWidth + 'px';
         nodes.colHeadersContainer.node.style.width = dataCellsContainerWidth + 'px';
+
+        var dataCellsTableWidth = dataCellsContainerWidth > dataCellsTableMaxWidth ? dataCellsTableMaxWidth : (dataCellsTableMaxWidth + 1);
+        nodes.dataCellsTable.node.style.width = (dataCellsTableWidth) + 'px';
+        nodes.colHeadersTable.node.style.width = (dataCellsTableWidth - 1) + 'px';
 
         var pivotContainerHeight = this.pgridwidget.pgrid.config.height;
 
