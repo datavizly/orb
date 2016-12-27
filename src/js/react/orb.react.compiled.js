@@ -156,6 +156,7 @@ module.exports.PivotTable = react.createClass({
         }
     },
     synchronizeCompsWidths: function () {
+        console.log('synchronizeCompsWidths');
         var self = this;
 
         var pivotWrapperTable = ReactDOM.findDOMNode(self.refs.pivotWrapperTable);
@@ -243,7 +244,7 @@ module.exports.PivotTable = react.createClass({
         nodes.colHeadersContainer.node.style.width = dataCellsContainerWidth + 'px';
 
         var dataCellsTableWidth = dataCellsContainerWidth > dataCellsTableMaxWidth ? dataCellsTableMaxWidth : (dataCellsTableMaxWidth + 1);
-        nodes.dataCellsTable.node.style.width = (dataCellsTableWidth) + 'px';
+        nodes.dataCellsTable.node.style.width = (dataCellsTableWidth - 1) + 'px';
         nodes.colHeadersTable.node.style.width = (dataCellsTableWidth - 1) + 'px';
 
         var pivotContainerHeight = this.pgridwidget.pgrid.config.height;
