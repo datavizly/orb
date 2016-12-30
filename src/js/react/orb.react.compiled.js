@@ -2983,57 +2983,59 @@ var defaultToolbarConfig = {
 
 defaultToolbarConfig.buttons = [{
     type: 'label',
-    text: 'Rows:'
+    text: '行:'
 }, {
     type: 'button',
-    tooltip: 'Expand all rows',
+    tooltip: '展开所有行',
     cssClass: 'expand-all',
     action: defaultToolbarConfig.expandAllRows
 }, {
     type: 'button',
-    tooltip: 'Collapse all rows',
+    tooltip: '收起行',
     cssClass: 'collapse-all',
     action: defaultToolbarConfig.collapseAllRows
 }, {
     type: 'button',
-    tooltip: 'Toggle rows sub totals',
+    tooltip: '显示分行统计',
     init: defaultToolbarConfig.initSubtotals(axe.Type.ROWS),
     action: defaultToolbarConfig.toggleSubtotals(axe.Type.ROWS)
 }, {
     type: 'button',
-    tooltip: 'Toggle rows grand total',
+    tooltip: '显示统计',
     init: defaultToolbarConfig.initGrandtotal(axe.Type.ROWS),
     action: defaultToolbarConfig.toggleGrandtotal(axe.Type.ROWS)
 }, {
     type: 'separator'
 }, {
     type: 'label',
-    text: 'Columns:'
+    text: '列:'
 }, {
     type: 'button',
-    tooltip: 'Expand all columns',
+    tooltip: '展开所有列',
     cssClass: 'expand-all',
     action: defaultToolbarConfig.expandAllColumns
 }, {
     type: 'button',
-    tooltip: 'Collapse all columns',
+    tooltip: '收起列',
     cssClass: 'collapse-all',
     action: defaultToolbarConfig.collapseAllColumns
-}, {
+},
+//     {
+//     type: 'button',
+//     tooltip: '显示分列统计列',
+//     init: defaultToolbarConfig.initSubtotals(axe.Type.COLUMNS),
+//     action: defaultToolbarConfig.toggleSubtotals(axe.Type.COLUMNS)
+// },
+    {
     type: 'button',
-    tooltip: 'Toggle columns sub totals',
-    init: defaultToolbarConfig.initSubtotals(axe.Type.COLUMNS),
-    action: defaultToolbarConfig.toggleSubtotals(axe.Type.COLUMNS)
-}, {
-    type: 'button',
-    tooltip: 'Toggle columns grand total',
+    tooltip: '显示统计列',
     init: defaultToolbarConfig.initGrandtotal(axe.Type.COLUMNS),
     action: defaultToolbarConfig.toggleGrandtotal(axe.Type.COLUMNS)
 }, {
     type: 'separator'
 }, {
     type: 'label',
-    text: 'Export:'
+    text: '导出:'
 }, {
     type: 'button',
     tooltip: 'Export to Excel',
