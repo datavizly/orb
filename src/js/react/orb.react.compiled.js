@@ -2849,7 +2849,7 @@ module.exports.Toolbar = react.createClass({
 
         var config = this.props.pivotTableComp.pgridwidget.pgrid.config;
 
-        if (config.toolbar && config.toolbar.visible) {
+        if ((this.props.visible) || (config.toolbar && config.toolbar.visible)) {
 
             var configButtons = config.toolbar.buttons ?
                 defaultToolbarConfig.buttons.concat(config.toolbar.buttons) :
